@@ -1,0 +1,12 @@
+#!/bin/bash
+
+rm -f tarp
+make tarp
+
+cd tests
+for fname in *.bash; do
+    echo
+    echo === $fname
+    echo
+    tarp=../tarp bash -e ./$fname || echo FAILED
+done
