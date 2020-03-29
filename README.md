@@ -78,16 +78,24 @@ This is alpha software, with little documentation and possible API changes.
 
 Future work:
 
-- add Github testing and release workflows
-- make function/library naming more consistent
-- add different FnameSplit options
-- add ParallelMapSamples
-- more documentation
-- close to 100% test coverage for Go
-- more command line tests
-- Kubernetes examples for large scale processing
-- add basic image processing, decompression, etc. functionality
-- add tensorcom tensor outputs
-- use Go libraries for accessing cloud/object storage directly
-- add Lua scripting to `tarp proc` for fast internal processing
-- TFRecord/tf.Example interoperability
+- high priority
+    - add Github testing and release workflows
+    - make function/library naming more consistent
+    - add ParallelMapSamples
+    - more documentation
+    - add 'tarp sendeof'
+- medium priority
+    - add tensorcom tensor outputs
+    - switch sort backend from sqlite3 to github.com/etcd-io/bbolt
+    - performance optimizations (remove needless copying)
+    - add different FnameSplit options
+    - close to 100% test coverage for Go
+    - more command line tests
+    - Kubernetes examples for large scale processing
+    - add basic image processing, decompression, etc. functionality
+    - add Lua scripting to `tarp proc` for fast internal processing
+    - switch to interface and registry for GOpen (from current ad hoc code)
+    - spec: JSON files for inputs
+- low priority
+    - use Go libraries for accessing cloud/object storage directly
+    - TFRecord/tf.Example interoperability
