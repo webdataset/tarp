@@ -18,7 +18,7 @@ type Raw struct {
 type RawPipe chan Raw
 
 var pattern string = "^((?:.*/)?(?:[^/.]+))[.]?([^/]*)$"
-var patternRe *regexp.Regexp = nil
+var patternRe *regexp.Regexp
 var combiner string = "."
 
 // FnameSplit is used for for aggregating/disaggregating
@@ -47,7 +47,7 @@ func FnameCombine(key, suffix string) string {
 func Aggregate(inch RawPipe, outch Pipe) {
 	Debug.Println("Aggregate")
 	lastKey := ""
-	var out Sample = nil
+	var out Sample
 	for sample := range inch {
 		key, suffix := FnameSplit(sample.key)
 		if key != lastKey {
@@ -142,7 +142,7 @@ func TarRawSink(stream io.Writer) func(RawPipe) {
 // invokes a callback for each shard.
 func ShardingRawSink(maxcount, maxsize int) func(RawPipe, chan RawPipe) {
 	return func(inch RawPipe, outch chan RawPipe) {
-		var current RawPipe = nil
+		var current RawPipe
 		size := 0
 		count := 0
 		for sample := range inch {

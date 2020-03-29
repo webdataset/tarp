@@ -28,20 +28,18 @@ func makesource(inputs []string, eof bool) func(datapipes.Pipe) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		infolog.Println("# makesource (ZMQ)", inputs[0])
 		return datapipes.ZMQSource(inputs[0], eof)
-	} else {
-		infolog.Println("# makesource", inputs)
-		return datapipes.TarSources(inputs)
 	}
+	infolog.Println("# makesource", inputs)
+	return datapipes.TarSources(inputs)
 }
 
 func makesink(output string, eof bool) func(datapipes.Pipe) {
 	if zurlre.MatchString(output) {
 		infolog.Println("# makesink (ZMQ)", output)
 		return datapipes.ZMQSink(output, eof)
-	} else {
-		infolog.Println("# makesink ", output)
-		return datapipes.TarSinkFile(output)
 	}
+	infolog.Println("# makesink ", output)
+	return datapipes.TarSinkFile(output)
 }
 
 func catcmd() {

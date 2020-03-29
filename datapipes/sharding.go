@@ -21,7 +21,7 @@ func MakeShards(maxcount, maxsize int) func(Pipe, chan Pipe) {
 	Assert(maxcount >= 2, "maxcount too small")
 	Assert(maxsize >= 1000, "maxsize too small")
 	return func(inch Pipe, outch chan Pipe) {
-		var current Pipe = nil
+		var current Pipe
 		size := 0
 		count := 0
 		for sample := range inch {

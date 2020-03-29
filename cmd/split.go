@@ -24,7 +24,7 @@ func splitcmd() {
 	Validate(strings.Contains(splitopts.Pattern, "%"), "pattern must contain something like %06d")
 	Validate(splitopts.Count >= 2, "count must be >= 2")
 	Validate(splitopts.Size >= 1e3, "size must be >= 1e3")
-	var post func(string) = nil
+	var post func(string)
 	if splitopts.Post != "" {
 		post = func(name string) {
 			cmd := fmt.Sprintf(splitopts.Post, name)
