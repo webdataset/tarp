@@ -1,3 +1,5 @@
+[code metrics](https://goreportcard.com/report/github.com/tmbdev/tarp)
+
 # The `tarp` Utility
 
 Tarfiles are commonly used for storing large amounts of data in an efficient,
@@ -76,6 +78,7 @@ This is alpha software, with little documentation and possible API changes.
 
 Future work:
 
+- add Github testing and release workflows
 - make function/library naming more consistent
 - add different FnameSplit options
 - add ParallelMapSamples
