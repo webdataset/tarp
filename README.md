@@ -86,7 +86,7 @@ Future work:
     - add 'tarp sendeof'
 - medium priority
     - add tensorcom tensor outputs
-    - switch sort backend from sqlite3 to github.com/etcd-io/bbolt
+    - switch sort backend from sqlite3 to bbolt or badger
     - performance optimizations (remove needless copying)
     - add different FnameSplit options
     - close to 100% test coverage for Go
