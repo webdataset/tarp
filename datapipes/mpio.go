@@ -13,7 +13,7 @@ import (
 	"gopkg.in/zeromq/goczmq.v4"
 )
 
-// MPSource reads concatenated msgpack from a stream and returns the smaples.
+// MPSource reads concatenated msgpack from a stream and returns the samples.
 // (Unimplemented.)
 func MPSource(stream io.ReadCloser) func(Pipe) {
 	panic("shamaton/msgpack does not support concatenated msgpack decoding")

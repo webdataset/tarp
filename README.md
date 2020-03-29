@@ -80,6 +80,8 @@ Future work:
 - add different FnameSplit options
 - add ParallelMapSamples
 - more documentation
+- close to 100% test coverage for Go
+- more command line tests
 - Kubernetes examples for large scale processing
 - add basic image processing, decompression, etc. functionality
 - add tensorcom tensor outputs
