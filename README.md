@@ -85,3 +85,4 @@ Future work:
 - add tensorcom tensor outputs
 - use Go libraries for accessing cloud/object storage directly
 - add Lua scripting to `tarp proc` for fast internal processing
+- TFRecord/tf.Example interoperability
