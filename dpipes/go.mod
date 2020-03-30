@@ -1,4 +1,4 @@
-module github.com/tmbdev/tarp/datapipes
+module github.com/tmbdev/tarp/dpipes
 
 go 1.14
 
