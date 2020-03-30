@@ -1,4 +1,4 @@
-package datapipes
+package dpipes
 
 import (
 	"database/sql"

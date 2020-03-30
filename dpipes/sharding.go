@@ -1,4 +1,4 @@
-package datapipes
+package dpipes
 
 // CombinePipes takes a channel of Pipes and combines
 // them into a single output stream.

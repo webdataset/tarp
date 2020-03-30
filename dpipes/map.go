@@ -1,4 +1,4 @@
-package datapipes
+package dpipes
 
 // MapSamples maps a SampleF over a Pipe
 func MapSamples(f SampleF, ignoreerrs bool) Process {

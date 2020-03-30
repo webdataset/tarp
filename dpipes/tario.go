@@ -1,5 +1,5 @@
 /*
-Package datapipes provides filters and utilities
+Package dpipes provides filters and utilities
 for processing samples in pipelines, in particular tar
 archives containing data for deep learning and
 big data applications.
@@ -14,7 +14,7 @@ first and output channel(s) second.
 Channel filters are generally curried, meaning they are
 called in a form like MyFilter(param)(inch, outch)
 */
-package datapipes
+package dpipes
 
 import (
 	"fmt"
