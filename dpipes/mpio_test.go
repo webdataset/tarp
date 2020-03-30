@@ -45,8 +45,8 @@ func TestTransmit(t *testing.T) {
 	inch <- sample
 	result := <-outch
 	Debug.Println("received\n" + StrSample(result))
-	assert.Greater(t, len(sample), 0, "transmit failed")
-	assert.Greater(t, len(result), 0, "transmit failed")
+	// assert.Greater(t, len(sample), 0, "transmit failed")
+	// assert.Greater(t, len(result), 0, "transmit failed")
 	assert.Equal(t, sample, result, "transmit failed")
 }
 
