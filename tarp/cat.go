@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/tmbdev/tarp/datapipes"
+	"github.com/tmbdev/tarp/dpipes"
 )
 
 var catopts struct {
@@ -23,23 +23,23 @@ var catopts struct {
 
 var zurlre *regexp.Regexp = regexp.MustCompile("^z[a-z]*:")
 
-func makesource(inputs []string, eof bool) func(datapipes.Pipe) {
+func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		infolog.Println("# makesource (ZMQ)", inputs[0])
-		return datapipes.ZMQSource(inputs[0], eof)
+		return dpipes.ZMQSource(inputs[0], eof)
 	}
 	infolog.Println("# makesource", inputs)
-	return datapipes.TarSources(inputs)
+	return dpipes.TarSources(inputs)
 }
 
-func makesink(output string, eof bool) func(datapipes.Pipe) {
+func makesink(output string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(output) {
 		infolog.Println("# makesink (ZMQ)", output)
-		return datapipes.ZMQSink(output, eof)
+		return dpipes.ZMQSink(output, eof)
 	}
 	infolog.Println("# makesink ", output)
-	return datapipes.TarSinkFile(output)
+	return dpipes.TarSinkFile(output)
 }
 
 func catcmd() {
@@ -47,12 +47,12 @@ func catcmd() {
 	Validate(catopts.Output != "", "must provide output (can be '-')")
 	infolog.Println("#", catopts.Positional.Inputs)
 	infolog.Println("#", catopts.Start, catopts.End)
-	processes := make([]datapipes.Process, 0, 100)
-	processes = append(processes, datapipes.SliceSamples(catopts.Start, catopts.End))
+	processes := make([]dpipes.Process, 0, 100)
+	processes = append(processes, dpipes.SliceSamples(catopts.Start, catopts.End))
 	if catopts.Logging > 0 {
 		infolog.Println("# logging", catopts.Logging)
 		processes = append(processes,
-			datapipes.LogProgress(
+			dpipes.LogProgress(
 				"cat", catopts.Logging, infolog,
 			),
 		)
@@ -60,17 +60,17 @@ func catcmd() {
 	if catopts.Fields != "" {
 		fields := strings.Split("__key__ "+catopts.Fields, " ")
 		infolog.Println("# rename", fields)
-		processes = append(processes, datapipes.RenameSamples(fields, false))
+		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	if catopts.Shuffle > 0 {
 		n := catopts.Shuffle
 		infolog.Println("# shuffle", n)
-		processes = append(processes, datapipes.Shuffle(n+1, n/2+1))
+		processes = append(processes, dpipes.Shuffle(n+1, n/2+1))
 	}
-	datapipes.Debug.Println("catcmd", datapipes.MyInfo())
-	datapipes.Processing(
+	dpipes.Debug.Println("catcmd", dpipes.MyInfo())
+	dpipes.Processing(
 		makesource(catopts.Positional.Inputs, !catopts.Noeof),
-		datapipes.Pipeline(processes...),
+		dpipes.Pipeline(processes...),
 		makesink(catopts.Output, !catopts.Noeof),
 	)
 }

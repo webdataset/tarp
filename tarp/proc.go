@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/tmbdev/tarp/datapipes"
+	"github.com/tmbdev/tarp/dpipes"
 )
 
 var procopts struct {
@@ -23,19 +23,19 @@ func proccmd() {
 	Validate(procopts.Output != "", "must provide output (can be '-')")
 	infolog.Println("#", procopts.Positional.Inputs)
 	infolog.Println("#", procopts.Start, procopts.End)
-	processes := make([]datapipes.Process, 0, 100)
-	processes = append(processes, datapipes.SliceSamples(procopts.Start, procopts.End))
+	processes := make([]dpipes.Process, 0, 100)
+	processes = append(processes, dpipes.SliceSamples(procopts.Start, procopts.End))
 	if procopts.Fields != "" {
 		fields := strings.Split("__key__ "+procopts.Fields, " ")
 		infolog.Println("# rename", fields)
-		processes = append(processes, datapipes.RenameSamples(fields, false))
+		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	if procopts.Command != "" {
-		processes = append(processes, datapipes.ProcessSamples(procopts.Command, "/tmp", false))
+		processes = append(processes, dpipes.ProcessSamples(procopts.Command, "/tmp", false))
 	}
-	datapipes.Processing(
+	dpipes.Processing(
 		makesource(procopts.Positional.Inputs, true),
-		datapipes.Pipeline(processes...),
+		dpipes.Pipeline(processes...),
 		makesink(procopts.Output, true),
 	)
 }

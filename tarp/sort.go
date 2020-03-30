@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tmbdev/tarp/datapipes"
+	"github.com/tmbdev/tarp/dpipes"
 )
 
 var sortopts struct {
@@ -48,16 +48,16 @@ func sortcmd() {
 	defer os.Remove(dbname)
 	tname := "samples"
 	infolog.Println("writing")
-	datapipes.Processing(
-		datapipes.TarSources(sortopts.Positional.Inputs),
-		datapipes.SliceSamples(sortopts.Start, sortopts.End),
-		datapipes.DBSink(db, tname, fields),
+	dpipes.Processing(
+		dpipes.TarSources(sortopts.Positional.Inputs),
+		dpipes.SliceSamples(sortopts.Start, sortopts.End),
+		dpipes.DBSink(db, tname, fields),
 	)
 	infolog.Println("reading")
-	datapipes.Processing(
-		datapipes.DBSource(db, tname, fields, sortfields[0]),
-		datapipes.CopySamples,
-		datapipes.TarSinkFile(sortopts.Output),
+	dpipes.Processing(
+		dpipes.DBSource(db, tname, fields, sortfields[0]),
+		dpipes.CopySamples,
+		dpipes.TarSinkFile(sortopts.Output),
 	)
 }
 

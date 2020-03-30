@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/tmbdev/tarp/datapipes"
+	"github.com/tmbdev/tarp/dpipes"
 )
 
 var splitopts struct {
@@ -32,10 +32,10 @@ func splitcmd() {
 			proc.Run()
 		}
 	}
-	datapipes.Processing(
-		datapipes.TarSources(splitopts.Positional.Inputs),
-		datapipes.SliceSamples(splitopts.Start, catopts.End),
-		datapipes.ShardingTarSink(
+	dpipes.Processing(
+		dpipes.TarSources(splitopts.Positional.Inputs),
+		dpipes.SliceSamples(splitopts.Start, catopts.End),
+		dpipes.ShardingTarSink(
 			splitopts.Count,
 			int(splitopts.Size),
 			splitopts.Pattern,

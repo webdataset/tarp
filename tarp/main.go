@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/jessevdk/go-flags"
-	"github.com/tmbdev/tarp/datapipes"
+	"github.com/tmbdev/tarp/dpipes"
 )
 
 var opts struct {
@@ -47,8 +47,8 @@ func Validate(ok bool, args ...interface{}) {
 }
 
 func main() {
-	infolog = datapipes.OpenLogger(opts.Infolog)
-	errlog = datapipes.OpenLogger(opts.Errlog)
+	infolog = dpipes.OpenLogger(opts.Infolog)
+	errlog = dpipes.OpenLogger(opts.Errlog)
 	if len(os.Args) == 1 {
 		Parser.WriteHelp(os.Stderr)
 		os.Exit(1)
