@@ -1,3 +1,8 @@
+# Test transmission of tar records from a sender to
+# a receiver via ZMQ push-pull
+# Note that zpush:/zpull: can simply be used in place
+# of regular input/output files with tarp cat.
+
 rm -f _test-zmq.tar sender.log receiver.log
 port=9559
 coproc receiver {
