@@ -1,6 +1,6 @@
 #!/bin/bash
 
-go build -o ./tarpcmd tarp/main.go || exit 1
+(cd tarp && go build && mv tarp ../tarpcmd)
 
 cd tests
 for fname in *.bash; do
