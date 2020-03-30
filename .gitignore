@@ -1,0 +1,10 @@
+*.db
+*.log
+*.out
+*.sum
+*.tar
+.gitignore
+.hgignore
+OLD
+foo.*
+tarp
