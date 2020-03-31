@@ -9,3 +9,5 @@ for fname in *.bash; do
     echo
     tarp=../tarpcmd bash -e ./$fname || echo FAILED
 done
+
+rm -f tarpcmd

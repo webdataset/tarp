@@ -12,7 +12,7 @@ import (
 
 // WriteBinary writes the bytes to disk at fname.
 func WriteBinary(fname string, data []byte) {
-	stream, err := os.Create(fname)
+	stream, err := GCreate(fname)
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +25,7 @@ func WriteBinary(fname string, data []byte) {
 
 // ReadBinary reads an entire file and returns a byte array.
 func ReadBinary(fname string) []byte {
-	stream, err := os.Open(fname)
+	stream, err := GOpen(fname)
 	if err != nil {
 		panic(err)
 	}

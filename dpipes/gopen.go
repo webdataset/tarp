@@ -2,15 +2,25 @@ package dpipes
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 )
 
+// TODO
+// - make this table/registry driven
+// - refactor into separate library
+// - support common protocols directly via Go libraries
+
 // GOpen is a generic open that understands "-" and "pipe:" syntax.
 func GOpen(fname string) (io.ReadCloser, error) {
 	if fname == "-" {
 		return os.Stdin, nil
+	}
+	if strings.HasPrefix(fname, "text:") {
+		data := fname[5:]
+		return ioutil.NopCloser(strings.NewReader(data)), nil
 	}
 	if strings.HasPrefix(fname, "pipe:") {
 		cmd := exec.Command("/bin/bash", "-c", fname[5:])

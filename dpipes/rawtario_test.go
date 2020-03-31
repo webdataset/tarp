@@ -65,14 +65,14 @@ func TestReadWrite(t *testing.T) {
 		TarRawSource(stream)(outch)
 	}()
 	sample := <-outch
-	assert.Equal(t, sample.key, "a", "record 1")
-	assert.Equal(t, string(sample.value), "A", "record 1")
+	assert.Equal(t, sample.Key, "a", "record 1")
+	assert.Equal(t, string(sample.Value), "A", "record 1")
 	sample = <-outch
-	assert.Equal(t, sample.key, "b", "record 2")
-	assert.Equal(t, string(sample.value), "B", "record 2")
+	assert.Equal(t, sample.Key, "b", "record 2")
+	assert.Equal(t, string(sample.Value), "B", "record 2")
 	sample = <-outch
-	assert.Equal(t, sample.key, "c", "record 3")
-	assert.Equal(t, string(sample.value), "C", "record 3")
+	assert.Equal(t, sample.Key, "c", "record 3")
+	assert.Equal(t, string(sample.Value), "C", "record 3")
 	_, ok := (<-outch)
 	if ok {
 		t.Error("failed to close channel")
@@ -112,8 +112,8 @@ func TestDisaggregate(t *testing.T) {
 	}
 	close(inch)
 	sample := <-outch
-	assert.Equal(t, "a/b.c.d", sample.key, "key")
-	assert.Equal(t, Bytes("hello world"), sample.value, "value")
+	assert.Equal(t, "a/b.c.d", sample.Key, "key")
+	assert.Equal(t, Bytes("hello world"), sample.Value, "value")
 }
 
 func TestRawSharding(t *testing.T) {

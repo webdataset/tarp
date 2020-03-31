@@ -10,8 +10,8 @@ import (
 
 // Raw is a struct representing unaggregated data items (e.g., from a tar file).
 type Raw struct {
-	key   string
-	value Bytes
+	Key   string
+	Value Bytes
 }
 
 // RawPipe is a channel consisting of Raw data items.
@@ -49,7 +49,7 @@ func Aggregate(inch RawPipe, outch Pipe) {
 	lastKey := ""
 	var out Sample
 	for sample := range inch {
-		key, suffix := FnameSplit(sample.key)
+		key, suffix := FnameSplit(sample.Key)
 		if key != lastKey {
 			if out != nil {
 				outch <- out
@@ -58,7 +58,7 @@ func Aggregate(inch RawPipe, outch Pipe) {
 			lastKey = key
 			out["__key__"] = []byte(key)
 		}
-		out[suffix] = sample.value
+		out[suffix] = sample.Value
 	}
 	if out != nil {
 		outch <- out
@@ -116,10 +116,10 @@ func TarRawSink(stream io.Writer) func(RawPipe) {
 	return func(inch RawPipe) {
 		tr := tar.NewWriter(stream)
 		for sample := range inch {
-			Debug.Println("# tar write", sample.key, MyInfo())
+			Debug.Println("# tar write", sample.Key, MyInfo())
 			var header tar.Header
-			header.Name = sample.key
-			header.Size = int64(len(sample.value))
+			header.Name = sample.Key
+			header.Size = int64(len(sample.Value))
 			header.Mode = 0755
 			header.Uid = 1000
 			header.Gid = 1000
@@ -128,13 +128,14 @@ func TarRawSink(stream io.Writer) func(RawPipe) {
 			if err := tr.WriteHeader(&header); err != nil {
 				panic(err)
 			}
-			samplestream := bytes.NewReader(sample.value)
+			samplestream := bytes.NewReader(sample.Value)
 			_, err := io.Copy(tr, samplestream)
 			if err != nil {
 				panic(err)
 			}
 		}
 		tr.Close()
+		// FIXME close stream here (analogous to channels)
 	}
 }
 
@@ -158,7 +159,7 @@ func ShardingRawSink(maxcount, maxsize int) func(RawPipe, chan RawPipe) {
 			}
 			current <- sample
 			count++
-			size += len(sample.value)
+			size += len(sample.Value)
 		}
 		close(current)
 		close(outch)

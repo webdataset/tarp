@@ -84,8 +84,10 @@ Future work:
     - add ParallelMapSamples
     - more documentation
     - add 'tarp sendeof'
-- medium priority
     - add tensorcom tensor outputs
+    - refactor GOpen/GCreate
+    - create dispatch for GOpen/GCreate
+- medium priority
     - switch sort backend from sqlite3 to bbolt or badger
     - performance optimizations (remove needless copying)
     - add different FnameSplit options

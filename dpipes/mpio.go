@@ -38,8 +38,8 @@ func MPTarSource(stream io.ReadCloser) func(Pipe) {
 		go TarRawSource(stream)(rawinch)
 		for raw := range rawinch {
 			sample := Sample{}
-			msgpack.Decode(raw.value, &sample)
-			sample["__key__"] = Bytes(raw.key)
+			msgpack.Decode(raw.Value, &sample)
+			sample["__key__"] = Bytes(raw.Key)
 			outch <- sample
 		}
 		close(outch)
