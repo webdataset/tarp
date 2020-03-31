@@ -21,7 +21,7 @@ func createcmd() {
 	Handle(err)
 	defer source.Close()
 	reader := bufio.NewReader(source)
-	whitespace := regexp.MustCompile("\\w+")
+	whitespace := regexp.MustCompile("\\s+")
 	lineno := 0
 	outch := make(dpipes.RawPipe)
 	done := dpipes.WaitFor(func() {
@@ -42,6 +42,7 @@ func createcmd() {
 		contents := dpipes.ReadBinary(source)
 		outch <- dpipes.Raw{output, contents}
 	}
+	close(outch)
 	<-done
 }
 
