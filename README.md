@@ -11,12 +11,9 @@ The `tarp` utility is a port of the Python [tarproc](http://github.com/tmbdev/ta
 utilities to Go. The `tarp` utility is a single executable, a "Swiss army knife"
 for dataset transformations.
 
-```Bash
-    $ gsutil cat gs://bucket/file.tar | tarp sort - -o - | tarp split -c 1000 -o 'output-%06d.tar'
-```
-
 Available commands are:
 
+- create: create tar files from a list of tar paths and corresponding data sources
 - cat: concatenate tar files
 - proc: process tar files
 - sort: sort tar files
@@ -26,6 +23,40 @@ For `tarp cat`, sources and destinations can be ZMQ URLs (specified using zpush/
 zpub/zsub, or zr versions that reverse connect/bind). This permits very large
 sorting, processing, and shuffling networks to be set up (Kubernetes is a good platform
 for this).
+
+Commands consistently take/require a "-o" for the output in order to avoid accidental
+file clobbering. You can specify "-" if you want to output to stdout.
+
+# Examples
+
+Download a dataset from Google Cloud, shuffle it, and split it into shards containing
+1000 training samples each:
+
+```Bash
+gsutil cat gs://bucket/file.tar | tarp sort - -o - | tarp split -c 1000 -o 'output-%06d.tar'
+```
+
+Create a dataset for images stored in directories whose names represent class labels,
+creates shards consisting of 1000 images each, and uploads them to Google cloud:
+
+```Bash
+for classdir in *; do
+    test -d $classdir || continue
+    for image in $classdir/*.png; do
+        imageid=$(basename $image .png)
+        echo "$imageid.txt text:$classdir"
+        echo "$imageid.png file:$image"
+    done
+done |
+sort |
+tarp create -o - - |
+tarp split -c 1000 -o 'dataset-%06d.tar' \
+    -p 'gsutil cp %s gs://mybucket/; rm %s'
+```
+
+(Note that in an actual application, you probably want to shuffle the
+samples in the text file you create after the sort command.)
+
 
 # Internals
 
@@ -101,3 +132,5 @@ Future work:
 - low priority
     - use Go libraries for accessing cloud/object storage directly
     - TFRecord/tf.Example interoperability
+    - add JSON input to "tarp create"
+    - add separator option to "tarp create"
