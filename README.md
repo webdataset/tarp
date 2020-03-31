@@ -37,7 +37,7 @@ gsutil cat gs://bucket/file.tar | tarp sort - -o - | tarp split -c 1000 -o 'outp
 ```
 
 Create a dataset for images stored in directories whose names represent class labels,
-creates shards consisting of 1000 images each, and uploads them to Google cloud:
+creates shards consisting of 1000 images each, and upload them to Google cloud:
 
 ```Bash
 for classdir in *; do
@@ -105,7 +105,8 @@ from the top of the source tree.
 
 # Status
 
-This is alpha software, with little documentation and possible API changes.
+This is fairly new software. The command line interface is fairly stable,
+but the internal APIs may still change substantially.
 
 Future work:
 
