@@ -70,9 +70,13 @@ func Aggregate(inch RawPipe, outch Pipe) {
 
 // Disaggregate is the inverse of Aggregate.
 func Disaggregate(inch Pipe, outch RawPipe) {
+	count := 0
 	for sample := range inch {
 		prefix := string(sample["__key__"])
 		// Debug.Println("Disaggregate", prefix)
+		if prefix == "" {
+			prefix = fmt.Sprintf("_%09d_", count)
+		}
 		Assert(prefix != "", "encountered empty prefix")
 		for key, value := range sample {
 			if key[0] == "_"[0] {
@@ -80,6 +84,7 @@ func Disaggregate(inch Pipe, outch RawPipe) {
 			}
 			outch <- Raw{FnameCombine(prefix, key), value}
 		}
+		count++
 	}
 	close(outch)
 }
