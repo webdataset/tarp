@@ -106,6 +106,8 @@ func isdir(s string) bool {
 	return mode.IsDir()
 }
 
+var MultiFmt string = GetEnv("ExecuteOnFmt", "%06d")
+
 // MultiExecuteOn unpacks data into a directory, executes the cmd
 // in that directory, and then gathers up all subdirectories as samples
 func MultiExecuteOn(cmd string) MultiSampleF {
@@ -129,14 +131,24 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 			}
 		}
 		result := make([]Sample, 0, 100)
-		for i := 0; i <= 99; i++ {
-			prefix := fmt.Sprintf("%s-%04d", "sample", i)
+		for i := 0; i <= 1000000; i++ {
+			prefix := fmt.Sprintf("%s-" + MultiFmt, "sample", i)
 			fnames, err := filepath.Glob(tmpdir + "/" + prefix + ".*")
 			if err != nil || len(fnames) < 1 {
-				continue
+				// allow gaps in the numbering for the first 100
+				if i >= 100 {
+					break
+				} else {
+					continue
+				}
 			}
 			Debug.Println("# MultiExecuteOn <", fnames)
 			osample := PackDir(tmpdir, prefix+".")
+			if string(osample["__key__"]) == "" {
+				if string(sample["__key__"]) != "" {
+					osample["__key__"] = Bytes(string(sample["__key__"]) + "/" + fmt.Sprintf(MultiFmt, i))
+				}
+			}
 			result = append(result, osample)
 		}
 		return result, nil
