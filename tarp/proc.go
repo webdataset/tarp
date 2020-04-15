@@ -32,9 +32,12 @@ func proccmd() {
 		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	if procopts.Command != "" {
+		Validate(procopts.MultiCommand == "", "specify either -c or -m")
 		processes = append(processes, dpipes.ProcessSamples(procopts.Command, false))
 	} else if procopts.MultiCommand != "" {
 		processes = append(processes, dpipes.MultiProcessSamples(procopts.MultiCommand, false))
+	} else {
+		Validate(false, "specify either -c or -m")
 	}
 	dpipes.Processing(
 		makesource(procopts.Positional.Inputs, true),
