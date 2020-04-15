@@ -70,7 +70,6 @@ func PackDir(dir, fprefix string) Sample {
 // ExecuteOn unpacks data into a directory, executes the cmd
 // in that directory, and then gathers up the result again.
 func ExecuteOn(cmd string) SampleF {
-	logger := OpenLogger(GetEnv("ExecuteOnLogger", "stderr"))
 	abort := (GetEnv("ExecuteOnAbort", "yes") == "no")
 	return func(sample Sample) (Sample, error) {
 		tmpdir, err := ioutil.TempDir(".", "*-execute")
@@ -81,18 +80,17 @@ func ExecuteOn(cmd string) SampleF {
 		Debug.Println("# ExecuteOn >", matches)
 		fullcmd := "cd '" + tmpdir + "'; " + cmd
 		proc := exec.Command("/bin/bash", "-c", fullcmd)
-		data, err := proc.CombinedOutput()
-		logger.Println(string(data))
+		proc.Stdout = os.Stdout
+		proc.Stderr = os.Stderr
+		err = proc.Run()
 		if err != nil {
-			logger.Println(err.Error())
+			Progress.Println(err.Error())
 			if abort {
 				panic("error in ExecuteOn")
 			}
 		}
 		matches, _ = filepath.Glob(tmpdir + "/sample.*")
 		Debug.Println("# ExecuteOn <", matches)
-		Debug.Println("# ExecuteOn output", string(data))
-		Debug.Println("# ExecuteOn err", err)
 		osample := PackDir(tmpdir, "sample.")
 		return osample, nil
 	}
@@ -111,7 +109,6 @@ func isdir(s string) bool {
 // MultiExecuteOn unpacks data into a directory, executes the cmd
 // in that directory, and then gathers up all subdirectories as samples
 func MultiExecuteOn(cmd string) MultiSampleF {
-	logger := OpenLogger(GetEnv("ExecuteOnLogger", "stderr"))
 	abort := (GetEnv("ExecuteOnAbort", "yes") == "no")
 	return func(sample Sample) ([]Sample, error) {
 		tmpdir, err := ioutil.TempDir(".", "*-execute")
@@ -122,10 +119,11 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 		Debug.Println("# ExecuteOn >", matches)
 		fullcmd := "cd '" + tmpdir + "'; " + cmd
 		proc := exec.Command("/bin/bash", "-c", fullcmd)
-		data, err := proc.CombinedOutput()
-		logger.Println(string(data))
+		proc.Stdout = os.Stdout
+		proc.Stderr = os.Stderr
+		err = proc.Run()
 		if err != nil {
-			logger.Println(err.Error())
+			Progress.Println(err.Error())
 			if abort {
 				panic("error in ExecuteOn")
 			}
@@ -138,8 +136,6 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 				continue
 			}
 			Debug.Println("# MultiExecuteOn <", fnames)
-			Debug.Println("# MultiExecuteOn output", string(data))
-			Debug.Println("# MultiExecuteOn err", err)
 			osample := PackDir(tmpdir, prefix+".")
 			result = append(result, osample)
 		}
