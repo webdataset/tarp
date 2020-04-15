@@ -12,6 +12,7 @@ var procopts struct {
 	Start      int    `long:"start" description:"start for slicing" default:"0"`
 	End        int    `long:"end" description:"end for slicing" default:"-1"`
 	Command    string `short:"c" long:"command" description:"shell command running in each sample dir"`
+	MultiCommand    string `short:"m" long:"multicommand" description:"shell command running in each sample dir"`
 	Shell      string `long:"shell" description:"shell command running in each sample dir" default:"/bin/bash"`
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -31,7 +32,9 @@ func proccmd() {
 		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	if procopts.Command != "" {
-		processes = append(processes, dpipes.ProcessSamples(procopts.Command, "/tmp", false))
+		processes = append(processes, dpipes.ProcessSamples(procopts.Command, false))
+	} else if procopts.MultiCommand != "" {
+		processes = append(processes, dpipes.MultiProcessSamples(procopts.MultiCommand, false))
 	}
 	dpipes.Processing(
 		makesource(procopts.Positional.Inputs, true),

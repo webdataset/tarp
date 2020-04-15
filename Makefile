@@ -1,15 +1,14 @@
-all: clean tarp
+all: clean bin/tarp
 
 clean:
 	go clean
-	rm -f tarp
 
-cmds := $(wildcard cmd/*.go)
-datapipes := $(wildcard datapipes/*.go)
+cmds := $(wildcard tarp/*.go)
+datapipes := $(wildcard dpipes/*.go)
 
-tarp: $(cmds) $(datapipes)
-	go build -o tarp $(cmds)
-	tarp -h
+bin/tarp: $(cmds) $(datapipes)
+	go build -o bin/tarp $(cmds)
+	bin/tarp -h
 
 test:
 	cd datapipes && go test -v

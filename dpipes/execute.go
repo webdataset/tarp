@@ -2,6 +2,7 @@ package dpipes
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -68,18 +69,18 @@ func PackDir(dir, fprefix string) Sample {
 
 // ExecuteOn unpacks data into a directory, executes the cmd
 // in that directory, and then gathers up the result again.
-func ExecuteOn(cmd, fprefix string) SampleF {
+func ExecuteOn(cmd string) SampleF {
 	return func(sample Sample) (Sample, error) {
 		tmpdir, err := ioutil.TempDir(".", "*-execute")
 		Handle(err)
 		defer os.RemoveAll(tmpdir)
 		UnpackInDir(sample, tmpdir, "sample.")
-		matches, _ := filepath.Glob(tmpdir + "/*")
+		matches, _ := filepath.Glob(tmpdir + "/sample.*")
 		Debug.Println("# ExecuteOn >", matches)
 		fullcmd := "cd '" + tmpdir + "'; " + cmd
 		proc := exec.Command("/bin/bash", "-c", fullcmd)
 		data, err := proc.Output()
-		matches, _ = filepath.Glob(tmpdir + "/*")
+		matches, _ = filepath.Glob(tmpdir + "/sample.*")
 		Debug.Println("# ExecuteOn <", matches)
 		Debug.Println("# ExecuteOn output", string(data))
 		Debug.Println("# ExecuteOn err", err)
@@ -93,6 +94,46 @@ func ExecuteOn(cmd, fprefix string) SampleF {
 }
 
 // ProcessSamples executes scripts on the files in a sampmle.
-func ProcessSamples(cmd, fprefix string, ignoreerrs bool) Process {
-	return MapSamples(ExecuteOn(cmd, fprefix), ignoreerrs)
+func ProcessSamples(cmd string, ignoreerrs bool) Process {
+	return MapSamples(ExecuteOn(cmd), ignoreerrs)
 }
+
+func isdir(s string) bool {
+	mode, _ := os.Stat(s)
+	return mode.IsDir()
+}
+
+// MultiExecuteOn unpacks data into a directory, executes the cmd
+// in that directory, and then gathers up all subdirectories as samples
+func MultiExecuteOn(cmd string) MultiSampleF {
+	return func(sample Sample) ([]Sample, error) {
+		tmpdir, err := ioutil.TempDir(".", "*-execute")
+		Handle(err)
+		defer os.RemoveAll(tmpdir)
+		UnpackInDir(sample, tmpdir, "sample.")
+		matches, _ := filepath.Glob(tmpdir + "/*")
+		Debug.Println("# ExecuteOn >", matches)
+		fullcmd := "cd '" + tmpdir + "'; " + cmd
+		proc := exec.Command("/bin/bash", "-c", fullcmd)
+		data, err := proc.Output()
+		result := make([]Sample, 0, 100)
+		for i := 0; i <= 99; i++ {
+			prefix := fmt.Sprintf("%s-%04d", "sample", i)
+			fnames, err := filepath.Glob(tmpdir + "/" + prefix + ".*")
+			if err != nil || len(fnames) < 1 {
+				continue
+			}
+			Debug.Println("# MultiExecuteOn <", fnames)
+			Debug.Println("# MultiExecuteOn output", string(data))
+			Debug.Println("# MultiExecuteOn err", err)
+			osample := PackDir(tmpdir, prefix+".")
+			result = append(result, osample)
+		}
+		return result, nil
+	}
+}
+
+func MultiProcessSamples(cmd string, ignoreerrs bool) Process {
+	return MultiMapSamples(MultiExecuteOn(cmd), ignoreerrs)
+}
+
