@@ -78,9 +78,9 @@ func ExecuteOn(cmd string) SampleF {
 		UnpackInDir(sample, tmpdir, "sample.")
 		matches, _ := filepath.Glob(tmpdir + "/sample.*")
 		Debug.Println("# ExecuteOn >", matches)
-		fullcmd := "cd '" + tmpdir + "'; " + cmd
+		fullcmd := "cd '" + tmpdir + "' > /dev/null; " + cmd
 		proc := exec.Command("/bin/bash", "-c", fullcmd)
-		proc.Stdout = os.Stdout
+		proc.Stdout = os.Stderr
 		proc.Stderr = os.Stderr
 		err = proc.Run()
 		if err != nil {
@@ -90,7 +90,6 @@ func ExecuteOn(cmd string) SampleF {
 			}
 		}
 		matches, _ = filepath.Glob(tmpdir + "/sample.*")
-		Debug.Println("# ExecuteOn <", matches)
 		osample := PackDir(tmpdir, "sample.")
 		return osample, nil
 	}
@@ -119,9 +118,9 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 		UnpackInDir(sample, tmpdir, "sample.")
 		matches, _ := filepath.Glob(tmpdir + "/*")
 		Debug.Println("# ExecuteOn >", matches)
-		fullcmd := "cd '" + tmpdir + "'; " + cmd
+		fullcmd := "cd '" + tmpdir + "' > /dev/null; " + cmd
 		proc := exec.Command("/bin/bash", "-c", fullcmd)
-		proc.Stdout = os.Stdout
+		proc.Stdout = os.Stderr
 		proc.Stderr = os.Stderr
 		err = proc.Run()
 		if err != nil {

@@ -47,8 +47,8 @@ func Validate(ok bool, args ...interface{}) {
 }
 
 func main() {
-	infolog = dpipes.OpenLogger(opts.Infolog)
-	errlog = dpipes.OpenLogger(opts.Errlog)
+	infolog = dpipes.OpenLogger(opts.Infolog, "[info]")
+	errlog = dpipes.OpenLogger(opts.Errlog, "[error]")
 	if len(os.Args) == 1 {
 		Parser.WriteHelp(os.Stderr)
 		os.Exit(1)

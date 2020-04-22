@@ -101,20 +101,20 @@ func GetFirst(sample Sample, spec string) (Bytes, error) {
 
 // OpenLogger opens a logger on a given file,
 // with abbreviations for stdout/stderr
-func OpenLogger(where string) *log.Logger {
-	if where == "" {
+func OpenLogger(where string, prefix string) *log.Logger {
+	if where == "null" || where == "" {
 		stream, _ := os.Open("/dev/null")
-		return log.New(stream, "", 0)
+		return log.New(stream, prefix, 0)
 	}
 	if where == "stderr" {
-		return log.New(os.Stderr, "", 0)
+		return log.New(os.Stderr, prefix, 0)
 	}
-	if where == "stdout" {
-		return log.New(os.Stdout, "", 0)
+	if strings.Contains(where, "/") {
+		stream, err := os.Create(where)
+		Handle(err)
+		return log.New(stream, prefix, 0)
 	}
-	stream, err := os.Create(where)
-	Handle(err)
-	return log.New(stream, "", 0)
+	panic(errors.New(where+": bad log dest"))
 }
 
 // MyInfo gets current goroutine info.
@@ -126,6 +126,6 @@ func MyInfo() string {
 }
 
 func init() {
-	Debug = OpenLogger(GetEnv("debug", ""))
-	Progress = OpenLogger(GetEnv("progress", "stderr"))
+	Debug = OpenLogger(GetEnv("debug", ""), "[debug]")
+	Progress = OpenLogger(GetEnv("progress", "stderr"), "")
 }

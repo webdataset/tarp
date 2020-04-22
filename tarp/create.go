@@ -37,6 +37,7 @@ func createcmd() {
 		}
 		lineno += 1
 		fields := whitespace.Split(string(line), 2)
+		infolog.Println(fields)
 		Validate(len(fields) == 2, "bad input line at", lineno)
 		output, source := fields[0], fields[1]
 		contents := dpipes.ReadBinary(source)

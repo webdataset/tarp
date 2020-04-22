@@ -1,13 +1,19 @@
 #!/bin/bash
 
-(cd tarp && go build && mv tarp ../tarpcmd)
+(cd tarp && go build && mv tarp ../tarpcmd) || {
+    echo "BUILD FAILED"
+    exit 3
+}
 
 cd tests
 for fname in *.bash; do
     echo
     echo === $fname
     echo
-    tarp=../tarpcmd bash -e ./$fname || echo FAILED
+    tarp=../tarpcmd bash -e ./$fname || {
+        echo TEST $fname FAILED
+        exit 1
+    }
 done
 
 rm -f tarpcmd
