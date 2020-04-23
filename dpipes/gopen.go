@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"bytes"
 )
 
 // TODO
@@ -14,11 +15,12 @@ import (
 // - support common protocols directly via Go libraries
 
 type waitCloser struct {
-	io.Reader
+	io.ReadCloser
 	cmd *exec.Cmd
 }
 
 func (c waitCloser) Close() error {
+	c.ReadCloser.Close()
 	return c.cmd.Wait()
 }
 
@@ -62,4 +64,30 @@ func GCreate(fname string) (io.WriteCloser, error) {
 		fname = fname[5:]
 	}
 	return os.Create(fname)
+}
+
+// WriteBinary writes the bytes to disk at fname.
+func WriteBinary(fname string, data []byte) error {
+	stream, err := GCreate(fname)
+	if err != nil {
+		return err
+	}
+	defer stream.Close()
+	_, err = stream.Write(data)
+	return err
+}
+
+// ReadBinary reads an entire file and returns a byte array.
+func ReadBinary(fname string) ([]byte, error) {
+	stream, err := GOpen(fname)
+	if err != nil {
+		return make([]byte, 0), err
+	}
+	buffer := bytes.NewBuffer(make([]byte, 0, 1000))
+	_, err = io.Copy(buffer, stream)
+	if err != nil {
+		return buffer.Bytes(), err
+	}
+	err = stream.Close()
+	return buffer.Bytes(), err
 }

@@ -40,7 +40,8 @@ func createcmd() {
 		infolog.Println(fields)
 		Validate(len(fields) == 2, "bad input line at", lineno)
 		output, source := fields[0], fields[1]
-		contents := dpipes.ReadBinary(source)
+		contents, err := dpipes.ReadBinary(source)
+		Handle(err)
 		outch <- dpipes.Raw{output, contents}
 	}
 	close(outch)

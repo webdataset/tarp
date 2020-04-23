@@ -62,3 +62,30 @@ func TestGopenPipe(t *testing.T) {
 	data = data[:n]
 	assert.Equal(t, data, []byte("abcdef\n"))
 }
+
+func TestGopenPipeFalse(t *testing.T) {
+	stream, err := GOpen("pipe:/bin/false")
+	assert.Nil(t, err)
+	data := make([]byte, 10000)
+	_, err = stream.Read(data)
+	err = stream.Close()
+	assert.NotNil(t, err)
+}
+
+func TestReadBinary(t *testing.T) {
+	data, err := ReadBinary("/dev/null")
+	assert.Nil(t, err)
+	assert.Equal(t, len(data), 0)
+}
+
+func TestReadBinaryPipe(t *testing.T) {
+	data, err := ReadBinary("pipe:echo abc")
+	assert.Nil(t, err)
+	assert.Equal(t, len(data), 4)
+	assert.Equal(t, []byte("abc\n"), data)
+}
+
+func TestReadBinaryPipeFalse(t *testing.T) {
+	_, err := ReadBinary("pipe:/bin/false")
+	assert.NotNil(t, err)
+}

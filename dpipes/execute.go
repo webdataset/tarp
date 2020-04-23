@@ -1,43 +1,13 @@
 package dpipes
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
 )
-
-// WriteBinary writes the bytes to disk at fname.
-func WriteBinary(fname string, data []byte) {
-	stream, err := GCreate(fname)
-	if err != nil {
-		panic(err)
-	}
-	defer stream.Close()
-	_, err = stream.Write(data)
-	if err != nil {
-		panic(err)
-	}
-}
-
-// ReadBinary reads an entire file and returns a byte array.
-func ReadBinary(fname string) []byte {
-	stream, err := GOpen(fname)
-	if err != nil {
-		panic(err)
-	}
-	// defer stream.Close()
-	buffer := bytes.NewBuffer(make([]byte, 0, 1000))
-	_, err = io.Copy(buffer, stream)
-	if err != nil {
-		panic(err)
-	}
-	return buffer.Bytes()
-}
 
 // UnpackInDir unpacks a sample into a directory/prefix
 // given by fprefix. You need to append the "." in fprefix
@@ -60,7 +30,8 @@ func PackDir(dir, fprefix string) Sample {
 	Handle(err)
 	var sample Sample = make(Sample)
 	for _, match := range matches {
-		data := ReadBinary(match)
+		data, err := ReadBinary(match)
+		Handle(err)
 		_, suffix := FnameSplit(match)
 		sample[suffix] = data
 	}
