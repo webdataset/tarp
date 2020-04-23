@@ -4,7 +4,7 @@
 cat > _plan <<EOF
 a.txt /dev/null
 a.more.txt text:more
-b.txt /dev/null
+b.txt pipe:echo b
 b.more.txt text:more2
 EOF
 

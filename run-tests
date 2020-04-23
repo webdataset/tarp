@@ -8,7 +8,7 @@
 cd tests
 for fname in *.bash; do
     echo
-    echo === $fname
+    echo === $fname 1>&2
     echo
     tarp=../tarpcmd bash -e ./$fname || {
         echo TEST $fname FAILED

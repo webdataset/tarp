@@ -30,7 +30,7 @@ func ReadBinary(fname string) []byte {
 	if err != nil {
 		panic(err)
 	}
-	defer stream.Close()
+	// defer stream.Close()
 	buffer := bytes.NewBuffer(make([]byte, 0, 1000))
 	_, err = io.Copy(buffer, stream)
 	if err != nil {
