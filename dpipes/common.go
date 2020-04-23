@@ -115,7 +115,7 @@ func OpenLogger(where string, ident string) *log.Logger {
 		Handle(err)
 		return log.New(stream, prefix, 0)
 	}
-	panic(errors.New(where+": bad log dest"))
+	panic(errors.New(where + ": bad log dest"))
 }
 
 // MyInfo gets current goroutine info.

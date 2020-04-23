@@ -1,12 +1,12 @@
 package dpipes
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
-	"bytes"
 )
 
 // TODO

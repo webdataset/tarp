@@ -2,11 +2,11 @@ package dpipes
 
 import (
 	"archive/tar"
-	"time"
 	"bytes"
 	"fmt"
 	"io"
 	"regexp"
+	"time"
 )
 
 // Raw is a struct representing unaggregated data items (e.g., from a tar file).

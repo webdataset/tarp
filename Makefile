@@ -11,12 +11,12 @@ bin/tarp: $(cmds) $(datapipes)
 	bin/tarp -h
 
 test:
-	cd datapipes && go test -v
+	cd dpipes && go test -v ./...
 
 dtest:
-	cd datapipes && debug=stdout go test -v | tee ../test.log
+	cd dpipes && debug=stdout go test -v ./... | tee ../test.log
 
 coverage:
-	cd datapipes && go test -coverprofile=c.out
-	cd datapipes && go tool cover -html=c.out -o coverage.html
-	firefox datapipes/coverage.html
+	cd dpipes && go test -v ./... -coverprofile=c.out
+	cd dpipes && go tool cover -html=c.out -o coverage.html
+	firefox dpipes/coverage.html

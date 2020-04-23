@@ -5,8 +5,7 @@ replace github.com/tmbdev/tarp/dpipes => ./dpipes
 go 1.14
 
 require (
-	github.com/bcicen/ctop v0.7.3 // indirect
-	github.com/jessevdk/go-flags v1.4.0
-	github.com/maruel/panicparse v1.3.0 // indirect
-	github.com/tmbdev/tarp/dpipes v0.0.0-20200330012711-53823ac810b9
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
+	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/tmbdev/tarp/dpipes v0.0.0-00010101000000-000000000000 // indirect
 )

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/tmbdev/tarp/dpipes"
+	"github.com/tmbdev/tarp/dpipes/messaging"
 )
 
 var catopts struct {
@@ -27,7 +28,7 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		infolog.Println("# makesource (ZMQ)", inputs[0])
-		return dpipes.ZMQSource(inputs[0], eof)
+		return messaging.ZMQSource(inputs[0], eof)
 	}
 	infolog.Println("# makesource", inputs)
 	return dpipes.TarSources(inputs)
@@ -36,7 +37,7 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 func makesink(output string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(output) {
 		infolog.Println("# makesink (ZMQ)", output)
-		return dpipes.ZMQSink(output, eof)
+		return messaging.ZMQSink(output, eof)
 	}
 	infolog.Println("# makesink ", output)
 	return dpipes.TarSinkFile(output)

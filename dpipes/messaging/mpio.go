@@ -1,4 +1,4 @@
-package dpipes
+package messaging
 
 import (
 	"errors"
@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/shamaton/msgpack"
+	. "github.com/tmbdev/tarp/dpipes"
 	"gopkg.in/zeromq/goczmq.v4"
 )
 

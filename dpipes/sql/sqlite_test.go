@@ -1,4 +1,4 @@
-package dpipes
+package sql
 
 import (
 	"database/sql"
@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
+	. "github.com/tmbdev/tarp/dpipes"
 )
 
 func TestDBSink(t *testing.T) {

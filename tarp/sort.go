@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/tmbdev/tarp/dpipes"
+	dpipesSQL "github.com/tmbdev/tarp/dpipes/sql"
 )
 
 var sortopts struct {
@@ -51,11 +52,11 @@ func sortcmd() {
 	dpipes.Processing(
 		dpipes.TarSources(sortopts.Positional.Inputs),
 		dpipes.SliceSamples(sortopts.Start, sortopts.End),
-		dpipes.DBSink(db, tname, fields),
+		dpipesSQL.DBSink(db, tname, fields),
 	)
 	infolog.Println("reading")
 	dpipes.Processing(
-		dpipes.DBSource(db, tname, fields, sortfields[0]),
+		dpipesSQL.DBSource(db, tname, fields, sortfields[0]),
 		dpipes.CopySamples,
 		dpipes.TarSinkFile(sortopts.Output),
 	)

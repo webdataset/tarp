@@ -1,4 +1,4 @@
-package dpipes
+package messaging
 
 import (
 	"os/exec"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	. "github.com/tmbdev/tarp/dpipes"
 )
 
 func TestZMQOpen(t *testing.T) {

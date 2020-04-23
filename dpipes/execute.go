@@ -102,7 +102,7 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 		}
 		result := make([]Sample, 0, 100)
 		for i := 0; i <= 1000000; i++ {
-			prefix := fmt.Sprintf("%s-" + MultiFmt, "sample", i)
+			prefix := fmt.Sprintf("%s-"+MultiFmt, "sample", i)
 			fnames, err := filepath.Glob(tmpdir + "/" + prefix + ".*")
 			if err != nil || len(fnames) < 1 {
 				// allow gaps in the numbering for the first 100
@@ -128,4 +128,3 @@ func MultiExecuteOn(cmd string) MultiSampleF {
 func MultiProcessSamples(cmd string, ignoreerrs bool) Process {
 	return MultiMapSamples(MultiExecuteOn(cmd), ignoreerrs)
 }
-

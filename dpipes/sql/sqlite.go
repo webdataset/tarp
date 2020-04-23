@@ -1,4 +1,4 @@
-package dpipes
+package sql
 
 import (
 	"database/sql"
@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
+	. "github.com/tmbdev/tarp/dpipes"
 	// load the sqlite3 driver
 	_ "github.com/mattn/go-sqlite3"
 )
