@@ -101,7 +101,8 @@ func GetFirst(sample Sample, spec string) (Bytes, error) {
 
 // OpenLogger opens a logger on a given file,
 // with abbreviations for stdout/stderr
-func OpenLogger(where string, prefix string) *log.Logger {
+func OpenLogger(where string, ident string) *log.Logger {
+	prefix := "[" + ident + "] "
 	if where == "null" || where == "" {
 		stream, _ := os.Open("/dev/null")
 		return log.New(stream, prefix, 0)
@@ -126,6 +127,6 @@ func MyInfo() string {
 }
 
 func init() {
-	Debug = OpenLogger(GetEnv("debug", ""), "[debug]")
-	Progress = OpenLogger(GetEnv("progress", "stderr"), "")
+	Debug = OpenLogger(GetEnv("debug", ""), "debug")
+	Progress = OpenLogger(GetEnv("progress", "stderr"), "progress")
 }

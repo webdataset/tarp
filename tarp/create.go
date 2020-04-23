@@ -10,6 +10,7 @@ import (
 
 var createopts struct {
 	Output     string `short:"o" long:"output" description:"output file" default:""`
+	Count int `long:"count" description:"maximum number of files to write (for testing)"`
 	Positional struct {
 		Input string `required:"yes"`
 	} `positional-args:"yes"`
@@ -30,19 +31,25 @@ func createcmd() {
 		defer stream.Close()
 		dpipes.TarRawSink(stream)(outch)
 	})
+	count := 0
 	for {
+		if count >= createopts.Count {
+			break
+		}
 		line, _, err := reader.ReadLine()
 		if err == io.EOF {
 			break
 		}
+		Handle(err)
 		lineno += 1
 		fields := whitespace.Split(string(line), 2)
-		infolog.Println(fields)
-		Validate(len(fields) == 2, "bad input line at", lineno)
+		Validate(len(fields) == 2, "bad input line at", lineno, ":", line)
+		infolog.Println(count, fields[0], "<-", fields[1])
 		output, source := fields[0], fields[1]
 		contents, err := dpipes.ReadBinary(source)
 		Handle(err)
 		outch <- dpipes.Raw{output, contents}
+		count++
 	}
 	close(outch)
 	<-done
