@@ -15,7 +15,7 @@ bin/tarp-full: $(cmds) $(datapipes)
 	bin/tarp -h
 
 test:
-	cd datapipes && go test -v
+	cd dpipes && go test -v
 
 dtest:
 	cd datapipes && debug=stdout go test -v | tee ../test.log
