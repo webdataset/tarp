@@ -10,7 +10,7 @@ import (
 
 var createopts struct {
 	Output     string `short:"o" long:"output" description:"output file" default:""`
-	Count int `long:"count" description:"maximum number of files to write (for testing)"`
+	Count      int    `long:"count" description:"maximum number of files to write (for testing)" default:"-1"`
 	Positional struct {
 		Input string `required:"yes"`
 	} `positional-args:"yes"`
@@ -33,11 +33,13 @@ func createcmd() {
 	})
 	count := 0
 	for {
-		if count >= createopts.Count {
+		if createopts.Count >= 0 && count >= createopts.Count {
+			infolog.Println(count, "[COUNT]")
 			break
 		}
 		line, _, err := reader.ReadLine()
 		if err == io.EOF {
+			infolog.Println(count, "[EOF]")
 			break
 		}
 		Handle(err)

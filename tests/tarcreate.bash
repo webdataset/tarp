@@ -1,6 +1,8 @@
 # Read the testdata tar file, keep only the first 10 records
 # ouputput them, and check that 10 records have been kept.
 
+set -x
+
 cat > _plan <<EOF
 a.txt /dev/null
 a.more.txt text:more
