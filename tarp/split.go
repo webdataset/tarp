@@ -13,8 +13,7 @@ var splitopts struct {
 	Size       float64 `short:"s" long:"size" description:"max size per shard" default:"1e9"`
 	Pattern    string  `short:"o" long:"output" description:"output pattern" default:"split-%06d.tar"`
 	Post       string  `short:"p" long:"post" description:"command running after each shard; use %s for shard file"`
-	Start      int     `long:"start" description:"start for slicing" default:"0"`
-	End        int     `long:"end" description:"end for slicing" default:"-1"`
+	Slice      string  `long:"slice" description:"input slice"`
 	Positional struct {
 		Inputs []string `required:"yes"`
 	} `positional-args:"yes"`
@@ -34,7 +33,7 @@ func splitcmd() {
 	}
 	dpipes.Processing(
 		dpipes.TarSources(splitopts.Positional.Inputs, nil),
-		dpipes.SliceSamples(splitopts.Start, catopts.End),
+		dpipes.SliceSamplesSpec(splitopts.Slice),
 		dpipes.ShardingTarSink(
 			splitopts.Count,
 			int(splitopts.Size),

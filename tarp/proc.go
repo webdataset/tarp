@@ -7,14 +7,13 @@ import (
 )
 
 var procopts struct {
-	Fields     string `short:"f" long:"field" description:"fields to extract; name or name=old1,old2,old3"`
-	Output     string `short:"o" long:"outputs" description:"output file"`
-	Start      int    `long:"start" description:"start for slicing" default:"0"`
-	End        int    `long:"end" description:"end for slicing" default:"-1"`
-	Command    string `short:"c" long:"command" description:"shell command running in each sample dir"`
-	MultiCommand    string `short:"m" long:"multicommand" description:"shell command running in each sample dir"`
-	Shell      string `long:"shell" description:"shell command running in each sample dir" default:"/bin/bash"`
-	Positional struct {
+	Fields       string `short:"f" long:"field" description:"fields to extract; name or name=old1,old2,old3"`
+	Output       string `short:"o" long:"outputs" description:"output file"`
+	Slice        string `long:"slice" description:"slice of input stream"`
+	Command      string `short:"c" long:"command" description:"shell command running in each sample dir"`
+	MultiCommand string `short:"m" long:"multicommand" description:"shell command running in each sample dir"`
+	Shell        string `long:"shell" description:"shell command running in each sample dir" default:"/bin/bash"`
+	Positional   struct {
 		Inputs []string `required:"yes"`
 	} `positional-args:"yes"`
 }
@@ -23,9 +22,9 @@ func proccmd() {
 	Validate(len(procopts.Positional.Inputs) >= 1, "must provide at least one input (can be '-')")
 	Validate(procopts.Output != "", "must provide output (can be '-')")
 	infolog.Println("#", procopts.Positional.Inputs)
-	infolog.Println("#", procopts.Start, procopts.End)
+	infolog.Println("#", procopts.Slice)
 	processes := make([]dpipes.Process, 0, 100)
-	processes = append(processes, dpipes.SliceSamples(procopts.Start, procopts.End))
+	processes = append(processes, dpipes.SliceSamplesSpec(procopts.Slice))
 	if procopts.Fields != "" {
 		fields := strings.Split("__key__ "+procopts.Fields, " ")
 		infolog.Println("# rename", fields)

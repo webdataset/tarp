@@ -11,17 +11,16 @@ import (
 )
 
 var catopts struct {
-	Fields  string `short:"f" long:"field" description:"fields to extract"`
-	Output  string `short:"o" long:"outputs" description:"output file"`
-	Start   int    `long:"start" description:"start for slicing" default:"0"`
-	End     int    `long:"end" description:"end for slicing" default:"-1"`
-	Shuffle int    `short:"s" long:"shuffle" description:"shuffle samples in memory" default:"0"`
-	Noeof   bool   `short:"E" long:"noeof" description:"don't send/receive EOF for ZMQ"`
-	Logging int    `short:"L" long:"logging" description:"log this often" default:"0"`
-	Mix     int    `short:"m" long:"mix" description:"mix samples from multiple sources" default:"0"`
-	Load    bool   `short:"l" long:"load" description:"load file list"`
-	Maxerr  int    `long:"maxerr" description:"maximum number of errors" default:"0"`
-	Select  string `long:"select" description:"select samples from input"`
+	Fields     string `short:"f" long:"field" description:"fields to extract"`
+	Output     string `short:"o" long:"outputs" description:"output file"`
+	Shuffle    int    `short:"s" long:"shuffle" description:"shuffle samples in memory" default:"0"`
+	Noeof      bool   `short:"E" long:"noeof" description:"don't send/receive EOF for ZMQ"`
+	Logging    int    `short:"L" long:"logging" description:"log this often" default:"0"`
+	Mix        int    `short:"m" long:"mix" description:"mix samples from multiple sources" default:"0"`
+	Load       bool   `short:"l" long:"load" description:"load file list"`
+	Maxerr     int    `long:"maxerr" description:"maximum number of errors" default:"0"`
+	ShardSlice string `long:"shardslice" description:"select samples from each input"`
+	Slice      string `long:"slice" description:"select samples (lo:hi:step)"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -64,9 +63,9 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	}
 	infolog.Println("# got", len(urls), "inputs")
 	var selector func() dpipes.Process = nil
-	if catopts.Select != "" {
+	if catopts.ShardSlice != "" {
 		selector = func() dpipes.Process {
-			return dpipes.SliceSamplesSpec(catopts.Select)
+			return dpipes.SliceSamplesSpec(catopts.ShardSlice)
 		}
 	}
 	if catopts.Mix > 0 {
@@ -89,7 +88,7 @@ func catcmd() {
 	Validate(len(catopts.Positional.Inputs) >= 1, "must provide at least one input (can be '-')")
 	Validate(catopts.Output != "", "must provide output (can be '-')")
 	infolog.Println("#", catopts.Positional.Inputs)
-	infolog.Println("#", catopts.Start, catopts.End)
+	infolog.Println("#", catopts.Slice, catopts.ShardSlice)
 	if catopts.Maxerr > 0 {
 		nerrors := 0
 		dpipes.TarHandler = func(err error) {
@@ -101,7 +100,7 @@ func catcmd() {
 		}
 	}
 	processes := make([]dpipes.Process, 0, 100)
-	processes = append(processes, dpipes.SliceSamples(catopts.Start, catopts.End))
+	processes = append(processes, dpipes.SliceSamplesSpec(catopts.Slice))
 	if catopts.Logging > 0 {
 		infolog.Println("# logging", catopts.Logging)
 		processes = append(processes,

@@ -14,8 +14,7 @@ var sortopts struct {
 	Fields     string `short:"f" long:"field" description:"fields to extract; name or name:old1;old2;old3"`
 	Output     string `short:"o" long:"outputs" description:"output file"`
 	Sortfields string `short:"s" long:"sortfield" description:"fields to sort on" default:"RANDOM()"`
-	Start      int    `long:"start" description:"start for slicing" default:"0"`
-	End        int    `long:"end" description:"end for slicing" default:"-1"`
+	Slice      string `long:"slice" description:"input slice"`
 	Tmpdir     string `long:"tmpdir" description:"temporary storage for sorting" default:""`
 	Keepdb     bool   `long:"keepdb"`
 	Positional struct {
@@ -31,7 +30,7 @@ func sortcmd() {
 	sortfields := strings.Split(sortopts.Sortfields, " ")
 	Validate(len(sortfields) == 1, "only one sort field can be specified")
 	infolog.Println("# inputs", sortopts.Positional.Inputs)
-	infolog.Println("# start:end", sortopts.Start, sortopts.End)
+	infolog.Println("# start:end", sortopts.Slice)
 	dbdir := ""
 	if sortopts.Tmpdir != "" {
 		dbdir = sortopts.Tmpdir
@@ -50,7 +49,7 @@ func sortcmd() {
 	infolog.Println("writing")
 	dpipes.Processing(
 		dpipes.TarSources(sortopts.Positional.Inputs, nil),
-		dpipes.SliceSamples(sortopts.Start, sortopts.End),
+		dpipes.SliceSamplesSpec(sortopts.Slice),
 		dpipes.DBSink(db, tname, fields),
 	)
 	infolog.Println("reading")

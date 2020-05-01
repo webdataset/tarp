@@ -41,22 +41,36 @@ func SliceSamples(start, end int) func(inch Pipe, outch Pipe) {
 	return SliceSamplesStep(start, end, 1)
 }
 
+// Parse a slice spec
+func ParseSliceSpec(spec string) (int, int, int) {
+	steps := strings.Split(spec, ":")
+	Assert(len(steps) >= 1 && len(steps) <= 3, spec, "must be lo:hi or lo:hi:step")
+	lo := 0
+	hi := 0
+	st := 1
+	var err error
+	if len(steps) == 1 {
+		hi, err = strconv.Atoi(steps[0])
+		Handle(err)
+	} else {
+		lo, err = strconv.Atoi(steps[0])
+		Handle(err)
+		hi, err = strconv.Atoi(steps[1])
+		Handle(err)
+		if len(steps) > 2 {
+			st, err = strconv.Atoi(steps[2])
+			Handle(err)
+		}
+	}
+	return lo, hi, st
+}
+
 // SliceSamples takes a slice out of a pipe using spec=="lo:hi:step"
 func SliceSamplesSpec(spec string) func(inch Pipe, outch Pipe) {
 	if spec == "" {
 		return CopySamples
 	}
-	steps := strings.Split(spec, ":")
-	Assert(len(steps) >= 2 && len(steps) <= 3, spec, "must be lo:hi or lo:hi:step")
-	lo, err := strconv.Atoi(steps[0])
-	Handle(err)
-	hi, err := strconv.Atoi(steps[1])
-	Handle(err)
-	st := 1
-	if len(steps) > 2 {
-		st, err = strconv.Atoi(steps[2])
-		Handle(err)
-	}
+	lo, hi, st := ParseSliceSpec(spec)
 	return SliceSamplesStep(lo, hi, st)
 }
 
