@@ -20,6 +20,7 @@ var catopts struct {
 	Logging int    `short:"L" long:"logging" description:"log this often" default:"0"`
 	Mix     int    `short:"m" long:"mix" description:"mix samples from multiple sources" default:"0"`
 	Load    bool   `short:"l" long:"load" description:"load file list"`
+	Maxerr  int    `long:"maxerr" description:"maximum number of errors" default:"0"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -60,7 +61,7 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 		expanded := dpipes.ExpandBraces(source)
 		urls = append(urls, expanded...)
 	}
-	infolog.Println("# makesource", urls)
+	infolog.Println("# got", len(urls), "inputs")
 	if catopts.Mix > 0 {
 		return dpipes.TarMixer(urls, catopts.Mix, 100)
 	} else {
@@ -82,6 +83,16 @@ func catcmd() {
 	Validate(catopts.Output != "", "must provide output (can be '-')")
 	infolog.Println("#", catopts.Positional.Inputs)
 	infolog.Println("#", catopts.Start, catopts.End)
+	if catopts.Maxerr > 0 {
+		nerrors := 0
+		dpipes.TarHandler = func(err error) {
+			if nerrors >= catopts.Maxerr {
+				panic(err)
+			}
+			errlog.Println("WARNING", err)
+			nerrors++
+		}
+	}
 	processes := make([]dpipes.Process, 0, 100)
 	processes = append(processes, dpipes.SliceSamples(catopts.Start, catopts.End))
 	if catopts.Logging > 0 {

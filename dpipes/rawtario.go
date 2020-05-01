@@ -90,7 +90,7 @@ func Disaggregate(inch Pipe, outch RawPipe) {
 	close(outch)
 }
 
-var TarHandler func(error) = Handler
+var TarHandler func(error) = func(err error) { Handle(err) }
 
 // TarRawSource extracts and loads files from a tar archive and
 // send them to the channel as a raw key/value pair.
@@ -103,7 +103,8 @@ func TarRawSource(stream io.Reader) func(RawPipe) {
 				break
 			}
 			if err != nil {
-				TarHandle(err)
+				TarHandler(err)
+				break
 			}
 			if header.Typeflag != tar.TypeReg {
 				continue
