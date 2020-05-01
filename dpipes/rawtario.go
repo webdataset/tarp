@@ -2,11 +2,11 @@ package dpipes
 
 import (
 	"archive/tar"
-	"time"
 	"bytes"
 	"fmt"
 	"io"
 	"regexp"
+	"time"
 )
 
 // Raw is a struct representing unaggregated data items (e.g., from a tar file).
@@ -97,9 +97,10 @@ func TarRawSource(stream io.Reader) func(RawPipe) {
 		tr := tar.NewReader(stream)
 		for {
 			header, err := tr.Next()
-			if header == nil {
+			if err == io.EOF {
 				break
 			}
+			Handle(err)
 			if header.Typeflag != tar.TypeReg {
 				continue
 			}

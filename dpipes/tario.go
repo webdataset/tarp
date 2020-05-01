@@ -97,7 +97,7 @@ func TarMixer(urls []string, group int, csize int) func(Pipe) {
 			for len(urls) > 0 && len(sources) < group {
 				Debug.Println("tarmixer open", urls[0])
 				c := make(Pipe, csize)
-				TarSourceFile(urls[0])(c)
+				go TarSourceFile(urls[0])(c)
 				sources = append(sources, c)
 				urls = urls[1:]
 				Debug.Println("tarmixer remaining", urls)
