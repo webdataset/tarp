@@ -92,7 +92,7 @@ func deletechannel(channels []Pipe, i int) []Pipe {
 func TarMixer(urls []string, group int, csize int) func(Pipe) {
 	return func(outch Pipe) {
 		sources := make([]Pipe, 0, group)
-		Debug.Println("tarmixer", len(urls), urls)
+		Debug.Println("tarmixer", len(urls), "group", group)
 		for i := 0; ; i++ {
 			for len(urls) > 0 && len(sources) < group {
 				Debug.Println("tarmixer open", urls[0])
