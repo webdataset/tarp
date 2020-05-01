@@ -33,7 +33,7 @@ func splitcmd() {
 		}
 	}
 	dpipes.Processing(
-		dpipes.TarSources(splitopts.Positional.Inputs),
+		dpipes.TarSources(splitopts.Positional.Inputs, nil),
 		dpipes.SliceSamples(splitopts.Start, catopts.End),
 		dpipes.ShardingTarSink(
 			splitopts.Count,

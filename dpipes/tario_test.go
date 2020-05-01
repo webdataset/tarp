@@ -59,7 +59,7 @@ func TestSources(t *testing.T) {
 	if true {
 		Debug.Println("TestSources 1x")
 		outch := make(Pipe, 100)
-		go TarSources([]string{tarfile})(outch)
+		go TarSources([]string{tarfile}, nil)(outch)
 		count := CountSamples(outch)
 		assert.Equal(t, 1000, count, "single tarsource")
 		Debug.Println("TestSources 1x done")
@@ -68,7 +68,16 @@ func TestSources(t *testing.T) {
 	if true {
 		Debug.Println("TestSources 2x")
 		outch := make(Pipe, 100)
-		go TarSources([]string{tarfile, tarfile})(outch)
+		go TarSources([]string{tarfile, tarfile}, nil)(outch)
+		count := CountSamples(outch)
+		assert.Equal(t, 2000, count, "single tarsource")
+		Debug.Println("TestSources 2x done")
+	}
+
+	if true {
+		Debug.Println("TarMixer 2x")
+		outch := make(Pipe, 100)
+		go TarMixer([]string{tarfile, tarfile}, 2, 100, nil)(outch)
 		count := CountSamples(outch)
 		assert.Equal(t, 2000, count, "single tarsource")
 		Debug.Println("TestSources 2x done")

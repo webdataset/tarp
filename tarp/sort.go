@@ -49,7 +49,7 @@ func sortcmd() {
 	tname := "samples"
 	infolog.Println("writing")
 	dpipes.Processing(
-		dpipes.TarSources(sortopts.Positional.Inputs),
+		dpipes.TarSources(sortopts.Positional.Inputs, nil),
 		dpipes.SliceSamples(sortopts.Start, sortopts.End),
 		dpipes.DBSink(db, tname, fields),
 	)

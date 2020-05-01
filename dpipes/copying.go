@@ -1,6 +1,10 @@
 package dpipes
 
-import "log"
+import (
+	"log"
+	"strconv"
+	"strings"
+)
 
 // CopySamples unconditionally copies samples from inch to outch.
 func CopySamples(inch Pipe, outch Pipe) {
@@ -11,11 +15,14 @@ func CopySamples(inch Pipe, outch Pipe) {
 }
 
 // SliceSamples takes a slice out of a pipe (from start to end).
-func SliceSamples(start, end int) func(inch Pipe, outch Pipe) {
+func SliceSamplesStep(start, end, step int) func(inch Pipe, outch Pipe) {
 	return func(inch Pipe, outch Pipe) {
 		count := 0
 		for sample := range inch {
 			if count < start {
+				continue
+			}
+			if count%step != 0 {
 				continue
 			}
 			if end >= 0 && count >= end {
@@ -27,6 +34,30 @@ func SliceSamples(start, end int) func(inch Pipe, outch Pipe) {
 		Debug.Println("SliceSamples end")
 		close(outch)
 	}
+}
+
+// SliceSamples takes a slice out of a pipe (from start to end), using step==1
+func SliceSamples(start, end int) func(inch Pipe, outch Pipe) {
+	return SliceSamplesStep(start, end, 1)
+}
+
+// SliceSamples takes a slice out of a pipe using spec=="lo:hi:step"
+func SliceSamplesSpec(spec string) func(inch Pipe, outch Pipe) {
+	if spec == "" {
+		return CopySamples
+	}
+	steps := strings.Split(spec, ":")
+	Assert(len(steps) >= 2 && len(steps) <= 3, spec, "must be lo:hi or lo:hi:step")
+	lo, err := strconv.Atoi(steps[0])
+	Handle(err)
+	hi, err := strconv.Atoi(steps[1])
+	Handle(err)
+	st := 1
+	if len(steps) > 2 {
+		st, err = strconv.Atoi(steps[2])
+		Handle(err)
+	}
+	return SliceSamplesStep(lo, hi, st)
 }
 
 // LogProgress displays processing progress. Info must contain %d and %s,

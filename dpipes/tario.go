@@ -89,7 +89,7 @@ func deletechannel(channels []Pipe, i int) []Pipe {
 
 // TarMixer opens #group files simultaneously and mixes them
 // into an output channel in a round-robin way.
-func TarMixer(urls []string, group int, csize int) func(Pipe) {
+func TarMixer(urls []string, group int, csize int, proc func() Process) func(Pipe) {
 	return func(outch Pipe) {
 		sources := make([]Pipe, 0, group)
 		Debug.Println("tarmixer", len(urls), "group", group)
@@ -98,7 +98,13 @@ func TarMixer(urls []string, group int, csize int) func(Pipe) {
 				Debug.Println("tarmixer open", urls[0])
 				c := make(Pipe, csize)
 				go TarSourceFile(urls[0])(c)
-				sources = append(sources, c)
+				if proc != nil {
+					c2 := make(Pipe, csize)
+					go proc()(c, c2)
+					sources = append(sources, c2)
+				} else {
+					sources = append(sources, c)
+				}
 				urls = urls[1:]
 				Debug.Println("tarmixer remaining", urls)
 			}
@@ -121,7 +127,7 @@ func TarMixer(urls []string, group int, csize int) func(Pipe) {
 
 // TarSources opens and reads multiple tar files
 // and sends their output to the pipe.
-func TarSources(urls []string) func(Pipe) {
+func TarSources(urls []string, proc func() Process) func(Pipe) {
 	return func(outch Pipe) {
 		Debug.Println("TarSources", urls)
 		sources := make(chan Pipe, 100)
@@ -129,7 +135,13 @@ func TarSources(urls []string) func(Pipe) {
 		for _, url := range urls {
 			Progress.Println("# source", url)
 			temp := make(Pipe, 100)
-			sources <- temp
+			if proc != nil {
+				temp2 := make(Pipe, 100)
+				go proc()(temp, temp2)
+				sources <- temp2
+			} else {
+				sources <- temp
+			}
 			TarSourceFile(url)(temp)
 		}
 		close(sources)

@@ -21,6 +21,7 @@ var catopts struct {
 	Mix     int    `short:"m" long:"mix" description:"mix samples from multiple sources" default:"0"`
 	Load    bool   `short:"l" long:"load" description:"load file list"`
 	Maxerr  int    `long:"maxerr" description:"maximum number of errors" default:"0"`
+	Select  string `long:"select" description:"select samples from input"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -62,10 +63,16 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 		urls = append(urls, expanded...)
 	}
 	infolog.Println("# got", len(urls), "inputs")
+	var selector func() dpipes.Process = nil
+	if catopts.Select != "" {
+		selector = func() dpipes.Process {
+			return dpipes.SliceSamplesSpec(catopts.Select)
+		}
+	}
 	if catopts.Mix > 0 {
-		return dpipes.TarMixer(urls, catopts.Mix, 100)
+		return dpipes.TarMixer(urls, catopts.Mix, 100, selector)
 	} else {
-		return dpipes.TarSources(urls)
+		return dpipes.TarSources(urls, selector)
 	}
 }
 
