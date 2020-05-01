@@ -77,6 +77,48 @@ func CountSamples(inch Pipe) int {
 	return count
 }
 
+func deletechannel(channels []Pipe, i int) []Pipe {
+	if len(channels) < 1 {
+		return []Pipe{}
+	}
+	for j := i + 1; j < len(channels); j++ {
+		channels[j-1] = channels[j]
+	}
+	return channels[:len(channels)-1]
+}
+
+// TarMixer opens #group files simultaneously and mixes them
+// into an output channel in a round-robin way.
+func TarMixer(urls []string, group int, csize int) func(Pipe) {
+	return func(outch Pipe) {
+		sources := make([]Pipe, 0, group)
+		Debug.Println("tarmixer", len(urls), urls)
+		for i := 0; ; i++ {
+			for len(urls) > 0 && len(sources) < group {
+				Debug.Println("tarmixer open", urls[0])
+				c := make(Pipe, csize)
+				TarSourceFile(urls[0])(c)
+				sources = append(sources, c)
+				urls = urls[1:]
+				Debug.Println("tarmixer remaining", urls)
+			}
+			if len(sources) == 0 {
+				break
+			}
+			index := i % len(sources)
+			sample, more := <-sources[index]
+			if more {
+				outch <- sample
+			} else {
+				Debug.Println("tarmixer input", index, "done", len(sources))
+				sources = deletechannel(sources, index)
+			}
+		}
+		Debug.Println("tarmixer all done")
+		close(outch)
+	}
+}
+
 // TarSources opens and reads multiple tar files
 // and sends their output to the pipe.
 func TarSources(urls []string) func(Pipe) {

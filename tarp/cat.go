@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bufio"
+	"io"
+	"os"
 	"regexp"
 	"strings"
 
@@ -15,6 +18,8 @@ var catopts struct {
 	Shuffle int    `short:"s" long:"shuffle" description:"shuffle samples in memory" default:"0"`
 	Noeof   bool   `short:"E" long:"noeof" description:"don't send/receive EOF for ZMQ"`
 	Logging int    `short:"L" long:"logging" description:"log this often" default:"0"`
+	Mix     int    `short:"m" long:"mix" description:"mix samples from multiple sources" default:"0"`
+	Load    bool   `short:"l" long:"load" description:"load file list"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -23,14 +28,44 @@ var catopts struct {
 
 var zurlre *regexp.Regexp = regexp.MustCompile("^z[a-z]*:")
 
+func readlines(fname string) []string {
+	source, err := os.Open(fname)
+	Handle(err)
+	defer source.Close()
+	reader := bufio.NewReader(source)
+	result := make([]string, 0, 100)
+	for {
+		line, _, err := reader.ReadLine()
+		if err == io.EOF {
+			break
+		}
+		Handle(err)
+		result = append(result, strings.TrimSpace(string(line)))
+	}
+	return result
+}
+
 func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		infolog.Println("# makesource (ZMQ)", inputs[0])
 		return dpipes.ZMQSource(inputs[0], eof)
 	}
-	infolog.Println("# makesource", inputs)
-	return dpipes.TarSources(inputs)
+	if catopts.Load {
+		Validate(len(inputs) == 1, "use --load only with single file")
+		inputs = readlines(inputs[0])
+	}
+	urls := make([]string, 0, 100)
+	for _, source := range inputs {
+		expanded := dpipes.ExpandBraces(source)
+		urls = append(urls, expanded...)
+	}
+	infolog.Println("# makesource", urls)
+	if catopts.Mix > 0 {
+		return dpipes.TarMixer(urls, catopts.Mix, 100)
+	} else {
+		return dpipes.TarSources(urls)
+	}
 }
 
 func makesink(output string, eof bool) func(dpipes.Pipe) {
