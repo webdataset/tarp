@@ -50,11 +50,14 @@ func ParseSliceSpec(spec string) (int, int, int) {
 	st := 1
 	var err error
 	if len(steps) == 1 {
-		hi, err = strconv.Atoi(steps[0])
-		Handle(err)
-	} else {
 		lo, err = strconv.Atoi(steps[0])
 		Handle(err)
+		hi = lo + 1
+	} else {
+		if steps[0] != "" {
+			lo, err = strconv.Atoi(steps[0])
+			Handle(err)
+		}
 		hi, err = strconv.Atoi(steps[1])
 		Handle(err)
 		if len(steps) > 2 {
