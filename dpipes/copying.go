@@ -1,6 +1,7 @@
 package dpipes
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -12,6 +13,21 @@ func CopySamples(inch Pipe, outch Pipe) {
 		outch <- sample
 	}
 	close(outch)
+}
+
+// RekeySamples changes the sample key based on a spec
+func RekeySamples(spec string) func(inch Pipe, outch Pipe) {
+	Assert(spec == "#", "only '#' supported as spec right now")
+	return func(inch Pipe, outch Pipe) {
+		count := 0
+		for sample := range inch {
+			sample["__key__"] = Bytes(fmt.Sprintf("%09d", count))
+			outch <- sample
+			count++
+		}
+		Debug.Println("SliceSamples end")
+		close(outch)
+	}
 }
 
 // SliceSamples takes a slice out of a pipe (from start to end).
@@ -41,7 +57,7 @@ func SliceSamples(start, end int) func(inch Pipe, outch Pipe) {
 	return SliceSamplesStep(start, end, 1)
 }
 
-// Parse a slice spec
+// ParseSliceSpec parses a lo:hi:step-style spec
 func ParseSliceSpec(spec string) (int, int, int) {
 	steps := strings.Split(spec, ":")
 	Assert(len(steps) >= 1 && len(steps) <= 3, spec, "must be lo:hi or lo:hi:step")

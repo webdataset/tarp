@@ -21,6 +21,7 @@ var catopts struct {
 	Maxerr     int    `long:"maxerr" description:"maximum number of errors" default:"0"`
 	ShardSlice string `long:"shardslice" description:"select samples from each input"`
 	Slice      string `long:"slice" description:"select samples (lo:hi:step)"`
+	Rekey      string `short:"R" long:"rekey" description:"replace the key based on spec (--rekey='#')"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -118,6 +119,9 @@ func catcmd() {
 		n := catopts.Shuffle
 		infolog.Println("# shuffle", n)
 		processes = append(processes, dpipes.Shuffle(n+1, n/2+1))
+	}
+	if catopts.Rekey != "" {
+		processes = append(processes, dpipes.RekeySamples(catopts.Rekey))
 	}
 	dpipes.Debug.Println("catcmd", dpipes.MyInfo())
 	dpipes.Processing(
