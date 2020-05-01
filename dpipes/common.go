@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -99,6 +100,30 @@ func GetFirst(sample Sample, spec string) (Bytes, error) {
 	return Bytes{}, errors.New(spec + ": not found")
 }
 
+// expand {000..123} notation in strings (similar to shell)
+func ExpandBraces(s string) []string {
+	pattern := regexp.MustCompile("[{][0-9]+[.][.][0-9]+[}]")
+	loc := pattern.FindStringIndex(s)
+	if len(loc) == 0 {
+		return []string{s}
+	}
+	sub := s[loc[0]+1 : loc[1]-1]
+	lohi := strings.Split(sub, "..")
+	lo, _ := strconv.Atoi(lohi[0])
+	hi, _ := strconv.Atoi(lohi[1])
+	fmt.Println(lo, hi)
+	prefix := s[:loc[0]]
+	rest := ExpandBraces(s[loc[1]:])
+	result := make([]string, 0, 100)
+	for i := lo; i <= hi; i++ {
+		for _, s := range rest {
+			expanded := fmt.Sprintf("%s%0*d%s", prefix, len(lohi[0]), i, s)
+			result = append(result, expanded)
+		}
+	}
+	return result
+}
+
 // OpenLogger opens a logger on a given file,
 // with abbreviations for stdout/stderr
 func OpenLogger(where string, ident string) *log.Logger {
@@ -115,7 +140,7 @@ func OpenLogger(where string, ident string) *log.Logger {
 		Handle(err)
 		return log.New(stream, prefix, 0)
 	}
-	panic(errors.New(where+": bad log dest"))
+	panic(errors.New(where + ": bad log dest"))
 }
 
 // MyInfo gets current goroutine info.
