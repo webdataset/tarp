@@ -9,6 +9,9 @@ func Pipeline(stages ...Process) Process {
 	if len(stages) < 1 {
 		panic(errors.New("must give at least one pipeline stage"))
 	}
+	if len(stages) == 1 {
+		return stages[0]
+	}
 	return func(inch Pipe, outch Pipe) {
 		for i, f := range stages {
 			temp := make(Pipe, 100)

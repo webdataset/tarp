@@ -17,6 +17,7 @@ var sortopts struct {
 	Slice      string `long:"slice" description:"input slice"`
 	Tmpdir     string `long:"tmpdir" description:"temporary storage for sorting" default:""`
 	Keepdb     bool   `long:"keepdb"`
+	Rekey      string `long:"rekey"`
 	Positional struct {
 		Inputs []string `required:"yes"`
 	} `positional-args:"yes"`
@@ -29,8 +30,8 @@ func sortcmd() {
 	fields := strings.Split("__key__ "+sortopts.Fields, " ")
 	sortfields := strings.Split(sortopts.Sortfields, " ")
 	Validate(len(sortfields) == 1, "only one sort field can be specified")
-	infolog.Println("# inputs", sortopts.Positional.Inputs)
-	infolog.Println("# start:end", sortopts.Slice)
+	verbose.Println("# inputs", sortopts.Positional.Inputs)
+	verbose.Println("# start:end", sortopts.Slice)
 	dbdir := ""
 	if sortopts.Tmpdir != "" {
 		dbdir = sortopts.Tmpdir
@@ -46,16 +47,22 @@ func sortcmd() {
 	defer db.Close()
 	defer os.Remove(dbname)
 	tname := "samples"
-	infolog.Println("writing")
+	verbose.Println("writing")
 	dpipes.Processing(
 		dpipes.TarSources(sortopts.Positional.Inputs, nil),
 		dpipes.SliceSamplesSpec(sortopts.Slice),
 		dpipes.DBSink(db, tname, fields),
 	)
-	infolog.Println("reading")
+	verbose.Println("reading")
+	processes := make([]dpipes.Process, 0, 100)
+	if sortopts.Rekey != "" {
+		processes = append(processes, dpipes.RekeySamples(sortopts.Rekey))
+	} else {
+		processes = append(processes, dpipes.CopySamples)
+	}
 	dpipes.Processing(
 		dpipes.DBSource(db, tname, fields, sortfields[0]),
-		dpipes.CopySamples,
+		dpipes.Pipeline(processes...),
 		dpipes.TarSinkFile(sortopts.Output),
 	)
 }

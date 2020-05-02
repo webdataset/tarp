@@ -127,6 +127,7 @@ func ExpandBraces(s string) []string {
 // OpenLogger opens a logger on a given file,
 // with abbreviations for stdout/stderr
 func OpenLogger(where string, ident string) *log.Logger {
+	where = GetEnv(ident+"_log", where)
 	prefix := "[" + ident + "] "
 	if where == "null" || where == "" {
 		stream, _ := os.Open("/dev/null")
@@ -152,6 +153,6 @@ func MyInfo() string {
 }
 
 func init() {
-	Debug = OpenLogger(GetEnv("debug", ""), "debug")
-	Progress = OpenLogger(GetEnv("progress", "stderr"), "progress")
+	Debug = OpenLogger("", "debug")
+	Progress = OpenLogger("stderr", "progress")
 }

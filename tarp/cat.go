@@ -50,7 +50,7 @@ func readlines(fname string) []string {
 func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
-		infolog.Println("# makesource (ZMQ)", inputs[0])
+		verbose.Println("# makesource (ZMQ)", inputs[0])
 		return dpipes.ZMQSource(inputs[0], eof)
 	}
 	if catopts.Load {
@@ -62,7 +62,7 @@ func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 		expanded := dpipes.ExpandBraces(source)
 		urls = append(urls, expanded...)
 	}
-	infolog.Println("# got", len(urls), "inputs")
+	verbose.Println("# got", len(urls), "inputs")
 	var selector func() dpipes.Process = nil
 	if catopts.ShardSlice != "" {
 		selector = func() dpipes.Process {
@@ -81,15 +81,15 @@ func makesink(output string, eof bool) func(dpipes.Pipe) {
 		infolog.Println("# makesink (ZMQ)", output)
 		return dpipes.ZMQSink(output, eof)
 	}
-	infolog.Println("# makesink ", output)
+	verbose.Println("# makesink ", output)
 	return dpipes.TarSinkFile(output)
 }
 
 func catcmd() {
 	Validate(len(catopts.Positional.Inputs) >= 1, "must provide at least one input (can be '-')")
 	Validate(catopts.Output != "", "must provide output (can be '-')")
-	infolog.Println("#", catopts.Positional.Inputs)
-	infolog.Println("#", catopts.Slice, catopts.ShardSlice)
+	verbose.Println("#", catopts.Positional.Inputs)
+	verbose.Println("#", catopts.Slice, catopts.ShardSlice)
 	if catopts.Maxerr > 0 {
 		nerrors := 0
 		dpipes.TarHandler = func(err error) {
@@ -103,7 +103,7 @@ func catcmd() {
 	processes := make([]dpipes.Process, 0, 100)
 	processes = append(processes, dpipes.SliceSamplesSpec(catopts.Slice))
 	if catopts.Logging > 0 {
-		infolog.Println("# logging", catopts.Logging)
+		verbose.Println("# logging", catopts.Logging)
 		processes = append(processes,
 			dpipes.LogProgress(
 				"cat", catopts.Logging, infolog,
@@ -112,7 +112,7 @@ func catcmd() {
 	}
 	if catopts.Fields != "" {
 		fields := strings.Split("__key__ "+catopts.Fields, " ")
-		infolog.Println("# rename", fields)
+		verbose.Println("# rename", fields)
 		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	if catopts.Shuffle > 0 {

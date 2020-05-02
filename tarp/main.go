@@ -11,9 +11,7 @@ import (
 )
 
 var opts struct {
-	Verbose bool   `short:"v" description:"verbose output"`
-	Errlog  string `long:"errlog" default:"stderr"`
-	Infolog string `long:"infolog" default:"stderr"`
+	Verbose bool `short:"v" description:"verbose output"`
 }
 
 // Commands is a registry of functions implementing subcommands.
@@ -24,6 +22,7 @@ var Parser = flags.NewParser(&opts, flags.Default)
 
 var infolog *log.Logger
 var errlog *log.Logger
+var verbose *log.Logger
 
 // Handle errors.
 func Handle(err error) {
@@ -49,6 +48,11 @@ func Validate(ok bool, args ...interface{}) {
 func main() {
 	infolog = dpipes.OpenLogger("stderr", "info")
 	errlog = dpipes.OpenLogger("stderr", "error")
+	if opts.Verbose {
+		verbose = dpipes.OpenLogger("stderr", "verbose")
+	} else {
+		verbose = dpipes.OpenLogger("", "verbose")
+	}
 	if len(os.Args) == 1 {
 		Parser.WriteHelp(os.Stderr)
 		os.Exit(1)

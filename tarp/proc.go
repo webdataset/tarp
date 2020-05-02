@@ -21,15 +21,10 @@ var procopts struct {
 func proccmd() {
 	Validate(len(procopts.Positional.Inputs) >= 1, "must provide at least one input (can be '-')")
 	Validate(procopts.Output != "", "must provide output (can be '-')")
-	infolog.Println("#", procopts.Positional.Inputs)
-	infolog.Println("#", procopts.Slice)
+	verbose.Println("#", procopts.Positional.Inputs)
+	verbose.Println("#", procopts.Slice)
 	processes := make([]dpipes.Process, 0, 100)
 	processes = append(processes, dpipes.SliceSamplesSpec(procopts.Slice))
-	if procopts.Fields != "" {
-		fields := strings.Split("__key__ "+procopts.Fields, " ")
-		infolog.Println("# rename", fields)
-		processes = append(processes, dpipes.RenameSamples(fields, false))
-	}
 	if procopts.Command != "" {
 		Validate(procopts.MultiCommand == "", "specify either -c or -m")
 		processes = append(processes, dpipes.ProcessSamples(procopts.Command, false))
@@ -37,6 +32,11 @@ func proccmd() {
 		processes = append(processes, dpipes.MultiProcessSamples(procopts.MultiCommand, false))
 	} else {
 		Validate(false, "specify either -c or -m")
+	}
+	if procopts.Fields != "" {
+		fields := strings.Split("__key__ "+procopts.Fields, " ")
+		verbose.Println("# rename", fields)
+		processes = append(processes, dpipes.RenameSamples(fields, false))
 	}
 	dpipes.Processing(
 		makesource(procopts.Positional.Inputs, true),
