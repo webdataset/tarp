@@ -42,7 +42,7 @@ func Validate(ok bool, args ...interface{}) {
 		result[i] = fmt.Sprintf("%v", v)
 	}
 	message := strings.Join(result, " ")
-	fmt.Println("Error:", message)
+	errlog.Println("Error:", message)
 	os.Exit(1)
 }
 
