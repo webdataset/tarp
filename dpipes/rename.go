@@ -15,9 +15,13 @@ func RenameFields(specs []string) SampleF {
 			if len(names) > 1 {
 				before = names[1]
 			}
-			value, err := GetFirst(sample, before)
+			value, field, err := GetFirst(sample, before)
 			Handle(err)
-			result[after] = value
+			if len(names) > 1 {
+				result[after] = value
+			} else {
+				result[field] = value
+			}
 		}
 		return result, nil
 	}

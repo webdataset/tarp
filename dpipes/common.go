@@ -91,13 +91,13 @@ func StrSample(sample Sample) string {
 }
 
 // GetFirst gets the first key matching the spec
-func GetFirst(sample Sample, spec string) (Bytes, error) {
+func GetFirst(sample Sample, spec string) (Bytes, string, error) {
 	for _, field := range strings.Split(spec, ",") {
 		if value, ok := sample[field]; ok {
-			return value, nil
+			return value, field, nil
 		}
 	}
-	return Bytes{}, errors.New(spec + ": not found")
+	return Bytes{}, "", errors.New(spec + ": not found")
 }
 
 // expand {000..123} notation in strings (similar to shell)

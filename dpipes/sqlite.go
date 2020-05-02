@@ -49,7 +49,7 @@ func GetFirstName(key string, sep string) string {
 func GetAll(sample Sample, keys []string) []Bytes {
 	result := make([]Bytes, len(keys))
 	for i, key := range keys {
-		result[i], _ = GetFirst(sample, key)
+		result[i], _, _ = GetFirst(sample, key)
 	}
 	return result
 }
@@ -108,7 +108,7 @@ func DBSinkNoCreate(db *sql.DB, tname string, fields []string) func(inch Pipe) {
 		for sample := range inch {
 			values := make([]interface{}, len(sources))
 			for i, k := range sources {
-				value, err := GetFirst(sample, k)
+				value, _, err := GetFirst(sample, k)
 				Handle(err)
 				values[i] = value
 			}
