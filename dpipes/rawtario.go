@@ -137,7 +137,7 @@ func TarRawSink(stream io.Writer) func(RawPipe) {
 			header.Gid = 1000
 			header.Uname = "bigdata"
 			header.Gname = "bigdata"
-			header.ModTime = time.Now()
+			header.ModTime = time.Now().Add(time.Second * (-2))
 			header.AccessTime = header.ModTime
 			header.ChangeTime = header.ModTime
 			if err := tr.WriteHeader(&header); err != nil {
