@@ -10,6 +10,10 @@ bin/tarp: $(cmds) $(datapipes)
 	go build -o bin/tarp $(cmds)
 	bin/tarp -h
 
+bin/tarp-full: $(cmds) $(datapipes)
+	go build -tags mpio -o bin/tarp $(cmds)
+	bin/tarp -h
+
 test:
 	cd datapipes && go test -v
 
