@@ -38,13 +38,12 @@ func SliceSamplesStep(start, end, step int) func(inch Pipe, outch Pipe) {
 			if count < start {
 				continue
 			}
-			if count%step != 0 {
-				continue
-			}
 			if end >= 0 && count >= end {
 				break
 			}
-			outch <- sample
+			if count%step == 0 {
+				outch <- sample
+			}
 			count++
 		}
 		Debug.Println("SliceSamples end")
@@ -62,7 +61,7 @@ func ParseSliceSpec(spec string) (int, int, int) {
 	steps := strings.Split(spec, ":")
 	Assert(len(steps) >= 1 && len(steps) <= 3, spec, "must be lo:hi or lo:hi:step")
 	lo := 0
-	hi := 0
+	hi := 999999999
 	st := 1
 	var err error
 	if len(steps) == 1 {
@@ -74,8 +73,10 @@ func ParseSliceSpec(spec string) (int, int, int) {
 			lo, err = strconv.Atoi(steps[0])
 			Handle(err)
 		}
-		hi, err = strconv.Atoi(steps[1])
-		Handle(err)
+		if steps[1] != "" {
+			hi, err = strconv.Atoi(steps[1])
+			Handle(err)
+		}
 		if len(steps) > 2 {
 			st, err = strconv.Atoi(steps[2])
 			Handle(err)
