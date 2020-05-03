@@ -40,6 +40,7 @@ func getdbdir() string {
 func WriteBadger(db badger.DB, sortfields []string) func(dpipes.Pipe) {
 	return func(inch dpipes.Pipe) {
 		for sample := range inch {
+			dpipes.Assert(len(sample["__key__"]) > 0, "encode")
 			data, err := msgpack.Encode(sample)
 			Handle(err)
 			key := make(dpipes.Bytes, 8)
@@ -48,6 +49,7 @@ func WriteBadger(db badger.DB, sortfields []string) func(dpipes.Pipe) {
 			} else {
 				key = sample[sortfields[0]]
 			}
+			dpipes.Assert(len(key) > 0)
 			err = db.Update(func(txn *badger.Txn) error {
 				dpipes.Debug.Println("db write", string(sample["__key__"]))
 				err = txn.Set(key, data)
@@ -73,8 +75,13 @@ func ReadBadger(db badger.DB) func(dpipes.Pipe) {
 			for it.Rewind(); it.Valid(); it.Next() {
 				item := it.Item()
 				err := item.Value(func(value []byte) error {
+					// msgpack.Decode points into byte array, but array
+					// is reused by it.Next(); that's why we need to copy
+					value1 := make([]byte, len(value))
+					copy(value1, value)
 					sample := dpipes.Sample{}
-					msgpack.Decode(value, &sample)
+					msgpack.Decode(value1, &sample)
+					dpipes.Assert(len(sample["__key__"]) > 0, "decode")
 					dpipes.Debug.Println("db read", string(sample["__key__"]))
 					outch <- sample
 					return nil

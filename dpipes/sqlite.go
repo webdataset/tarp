@@ -1,5 +1,10 @@
 // +build sqlite
 
+// This is an optional source/sink using SQLite3 databases.
+// It used to be the backend for tarp sort, but is not currently
+// used. It is left here because it may be useful for other
+// applications.
+
 package dpipes
 
 import (

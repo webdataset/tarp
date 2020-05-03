@@ -4,9 +4,10 @@ package dpipes
 
 import (
 	"io"
-
-	"gopkg.in/zeromq/goczmq.v4"
 )
+
+type NoSocket struct {
+}
 
 // MPSource reads concatenated msgpack from a stream and returns the samples.
 // (Unimplemented.)
@@ -30,7 +31,7 @@ func MPTarSink(stream io.WriteCloser) func(Pipe) {
 }
 
 // ZMQOpen takes a zmq URL spec and returns a socket.
-func ZMQOpen(rawurl string) (*goczmq.Sock, error) {
+func ZMQOpen(rawurl string) (*NoSocket, error) {
 	panic("compiled without mpio")
 }
 
