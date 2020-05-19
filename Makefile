@@ -1,26 +1,26 @@
-all: clean bin/tarp
-
-clean:
-	go clean
-
 cmds := $(wildcard tarp/*.go)
-datapipes := $(wildcard dpipes/*.go)
+dpipes := $(wildcard dpipes/*.go)
 
-bin/tarp: $(cmds) $(datapipes)
+bin/tarp: $(cmds) $(dpipes)
+	go clean
 	go build -o bin/tarp $(cmds)
 	bin/tarp -h
 
-bin/tarp-full: $(cmds) $(datapipes)
+bin/tarp-full: $(cmds) $(dpipes)
+	go clean
 	go build -tags mpio -o bin/tarp $(cmds)
 	bin/tarp -h
 
+install: bin/tarp
+	cp bin/tarp /usr/local/bin
+
 test:
-	cd datapipes && go test -v
+	cd dpipes && go test -v
 
 dtest:
-	cd datapipes && debug=stdout go test -v | tee ../test.log
+	cd dpipes && debug=stdout go test -v | tee ../test.log
 
 coverage:
-	cd datapipes && go test -coverprofile=c.out
-	cd datapipes && go tool cover -html=c.out -o coverage.html
-	firefox datapipes/coverage.html
+	cd dpipes && go test -coverprofile=c.out
+	cd dpipes && go tool cover -html=c.out -o coverage.html
+	firefox dpipes/coverage.html
