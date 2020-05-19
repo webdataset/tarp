@@ -186,7 +186,7 @@ func ShardingRawSink(maxcount, maxsize int) func(RawPipe, chan RawPipe) {
 func ShardingRawTarSink(maxcount, maxsize int, pattern string, callback func(string)) func(RawPipe) {
 	return func(inch RawPipe) {
 		count := 0
-		shards := make(chan RawPipe, 100)
+		shards := make(chan RawPipe, Pipesize)
 		go ShardingRawSink(maxcount, maxsize)(inch, shards)
 		for inch := range shards {
 			name := fmt.Sprintf(pattern, count)

@@ -41,6 +41,9 @@ var Debug *log.Logger
 // Progress is a logger for reporting progress
 var Progress *log.Logger
 
+// Default pipe size for most internal pipes
+var Pipesize int
+
 // Handle is a generic error handler (usually calls panic)
 func Handle(err error, args ...interface{}) {
 	if err != nil {
@@ -155,4 +158,9 @@ func MyInfo() string {
 func init() {
 	Debug = OpenLogger("", "debug")
 	Progress = OpenLogger("stderr", "progress")
+	size, err := strconv.Atoi(GetEnv("TARP_PIPESIZE", "10"))
+	Handle(err)
+	Assert(size > 1, "pipesize too small")
+	Assert(size < 10000, "pipesize too large")
+	Pipesize = size
 }
