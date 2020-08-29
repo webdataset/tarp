@@ -119,6 +119,7 @@ Future work:
     - add tensorcom tensor outputs
     - refactor GOpen/GCreate
     - create dispatch for GOpen/GCreate
+    - add key rewriting / key grouping via regexp
 - medium priority
     - switch sort backend from sqlite3 to bbolt or badger
     - performance optimizations (remove needless copying)
