@@ -33,6 +33,13 @@ The `tarp` command line utility is a standard Golang command line program. You n
 [install Go](https://golang.org/doc/install). Afterwards, you can install `tarp` with:
 
 	$ go get -v github.com/tmbdev/tarp
+	
+Alternatively, you can also install from a local clone:
+
+	git clone https://github.com/tmbdev/tarp.git
+	cd tarp
+	make bin/tarp
+	sudo make install
 
 # Examples
 
