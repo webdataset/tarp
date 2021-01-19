@@ -32,7 +32,7 @@ file clobbering. You can specify "-" if you want to output to stdout.
 The `tarp` command line utility is a standard Golang command line program. You need to
 [install Go](https://golang.org/doc/install). Afterwards, you can install `tarp` with:
 
-	$ go get -v github.com/tmbdev/tarp
+	$ go get -v github.com/tmbdev/tarp/tarp
 	
 Alternatively, you can also install from a local clone:
 
