@@ -14,7 +14,7 @@ func Pipeline(stages ...Process) Process {
 	}
 	return func(inch Pipe, outch Pipe) {
 		for i, f := range stages {
-			temp := make(Pipe, 100)
+			temp := make(Pipe, Pipesize)
 			if i == len(stages)-1 {
 				temp = outch
 			}
@@ -28,8 +28,8 @@ func Pipeline(stages ...Process) Process {
 // given process (which might be a Pipeline), and writes them to
 // the given sink.
 func Processing(source func(Pipe), process Process, sink func(Pipe)) {
-	inch := make(Pipe, 100)
-	outch := make(Pipe, 100)
+	inch := make(Pipe, Pipesize)
+	outch := make(Pipe, Pipesize)
 	go func() {
 		Debug.Println("Processing start source")
 		source(inch)

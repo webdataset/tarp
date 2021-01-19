@@ -51,7 +51,7 @@ func SampleSize(sample Sample) int {
 // TarSource reads a tar file and outputs a stream of samples.
 func TarSource(stream io.ReadCloser) func(Pipe) {
 	return func(outch Pipe) {
-		rawinch := make(RawPipe, 100)
+		rawinch := make(RawPipe, Pipesize)
 		go Aggregate(rawinch, outch)
 		TarRawSource(stream)(rawinch)
 		stream.Close()
@@ -130,13 +130,13 @@ func TarMixer(urls []string, group int, csize int, proc func() Process) func(Pip
 func TarSources(urls []string, proc func() Process) func(Pipe) {
 	return func(outch Pipe) {
 		Debug.Println("TarSources", urls)
-		sources := make(chan Pipe, 100)
+		sources := make(chan Pipe, Pipesize)
 		go CombinePipes(sources, outch)
 		for _, url := range urls {
 			Progress.Println("# source", url)
-			temp := make(Pipe, 100)
+			temp := make(Pipe, Pipesize)
 			if proc != nil {
-				temp2 := make(Pipe, 100)
+				temp2 := make(Pipe, Pipesize)
 				go proc()(temp, temp2)
 				sources <- temp2
 			} else {
@@ -152,7 +152,7 @@ func TarSources(urls []string, proc func() Process) func(Pipe) {
 // TarSink writes a stream of samples to disk as a tar file.
 func TarSink(stream io.WriteCloser) func(Pipe) {
 	return func(inch Pipe) {
-		rawinch := make(RawPipe, 100)
+		rawinch := make(RawPipe, Pipesize)
 		go Disaggregate(inch, rawinch)
 		TarRawSink(stream)(rawinch)
 		stream.Close()
@@ -174,7 +174,7 @@ func TarSinkFile(fname string) func(Pipe) {
 func ShardingTarSink(maxcount, maxsize int, pattern string, callback func(string)) func(Pipe) {
 	return func(inch Pipe) {
 		count := 0
-		shards := make(chan Pipe, 100)
+		shards := make(chan Pipe, Pipesize)
 		go MakeShards(maxcount, maxsize)(inch, shards)
 		for inch := range shards {
 			name := fmt.Sprintf(pattern, count)
