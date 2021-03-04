@@ -22,6 +22,7 @@ var catopts struct {
 	ShardSlice string `long:"shardslice" description:"select samples from each input"`
 	Slice      string `long:"slice" description:"select samples (lo:hi:step)"`
 	Rekey      string `short:"R" long:"rekey" description:"replace the key based on spec (--rekey='#')"`
+	TarNoErr   bool   `long:"tarnoerr" description:"ignore errors in tar"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -48,6 +49,9 @@ func readlines(fname string) []string {
 }
 
 func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
+	if catopts.TarNoErr {
+		dpipes.TarHandler = dpipes.Warning
+	}
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		verbose.Println("# makesource (ZMQ)", inputs[0])

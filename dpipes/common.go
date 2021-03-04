@@ -54,6 +54,22 @@ func Handle(err error, args ...interface{}) {
 		message := strings.Join(result, " ")
 		fmt.Println("Catch:", message)
 		panic(err)
+	} else {
+		fmt.Println("Warning called with nil error")
+	}
+}
+
+// Handle is a generic warning handler (returns after printing warning)
+func Warning(err error, args ...interface{}) {
+	if err != nil {
+		result := make([]string, len(args))
+		for i, v := range args {
+			result[i] = fmt.Sprintf("%v", v)
+		}
+		message := strings.Join(result, " ")
+		fmt.Println("Catch:", message)
+	} else {
+		fmt.Println("Warning called with nil error")
 	}
 }
 

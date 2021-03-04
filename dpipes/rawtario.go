@@ -22,6 +22,8 @@ var pattern string = "^((?:.*/)?(?:[^/.]+))[.]?([^/]*)$"
 var patternRe *regexp.Regexp
 var combiner string = "."
 
+var TarHandler func(error) = func(err error) { Handle(err) }
+
 // FnameSplit is used for for aggregating/disaggregating
 // a sorted list of file into groups of related files sharing
 // a common basename.
@@ -96,8 +98,6 @@ func Disaggregate(inch Pipe, outch RawPipe) {
 	close(outch)
 }
 
-var TarHandler func(error) = func(err error) { Handle(err) }
-
 // TarRawSource extracts and loads files from a tar archive and
 // send them to the channel as a raw key/value pair.
 func TarRawSource(stream io.Reader) func(RawPipe) {
@@ -114,9 +114,6 @@ func TarRawSource(stream io.Reader) func(RawPipe) {
 			}
 			if header.Typeflag != tar.TypeReg {
 				continue
-			}
-			if err != nil {
-				panic(err)
 			}
 			var buffer bytes.Buffer
 			io.Copy(&buffer, tr)
