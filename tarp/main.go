@@ -24,6 +24,8 @@ var infolog *log.Logger
 var errlog *log.Logger
 var verbose *log.Logger
 
+var version string
+
 // Handle errors.
 func Handle(err error) {
 	if err != nil {
@@ -47,12 +49,8 @@ func Validate(ok bool, args ...interface{}) {
 
 func main() {
 	infolog = dpipes.OpenLogger("stderr", "info")
+	infolog.Println("version", version, opts.Verbose)
 	errlog = dpipes.OpenLogger("stderr", "error")
-	if opts.Verbose {
-		verbose = dpipes.OpenLogger("stderr", "verbose")
-	} else {
-		verbose = dpipes.OpenLogger("", "verbose")
-	}
 	if len(os.Args) == 1 {
 		Parser.WriteHelp(os.Stderr)
 		os.Exit(1)
@@ -65,6 +63,11 @@ func main() {
 		} else {
 			os.Exit(1)
 		}
+	}
+	if opts.Verbose {
+		verbose = dpipes.OpenLogger("stderr", "verbose")
+	} else {
+		verbose = dpipes.OpenLogger("", "verbose")
 	}
 	if Parser.Active == nil {
 		Parser.WriteHelp(os.Stderr)

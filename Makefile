@@ -1,20 +1,14 @@
 cmds := $(wildcard tarp/*.go)
 dpipes := $(wildcard dpipes/*.go)
 
-bin/tarp: $(cmds) $(dpipes)
-	go clean
-	cd tarp && go get -u
-	go build -o bin/tarp $(cmds)
-	bin/tarp -h
+bin/tarp:
+	cd tarp && make tarp
 
-bin/tarp-full: $(cmds) $(dpipes)
-	go clean
-	cd tarp && go get -u
-	go build -tags mpio -o bin/tarp $(cmds)
-	bin/tarp -h
+bin/tarp-full:
+	cd tarp && make tarp-full
 
-install: bin/tarp
-	cp bin/tarp /usr/local/bin
+install:
+	cd tarp && make install
 
 test:
 	cd dpipes && go test -v

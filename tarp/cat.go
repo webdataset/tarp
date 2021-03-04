@@ -22,7 +22,6 @@ var catopts struct {
 	ShardSlice string `long:"shardslice" description:"select samples from each input"`
 	Slice      string `long:"slice" description:"select samples (lo:hi:step)"`
 	Rekey      string `short:"R" long:"rekey" description:"replace the key based on spec (--rekey='#')"`
-	TarNoErr   bool   `long:"tarnoerr" description:"ignore errors in tar"`
 	// Shuffle int
 	Positional struct {
 		Inputs []string `required:"yes"`
@@ -49,9 +48,6 @@ func readlines(fname string) []string {
 }
 
 func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
-	if catopts.TarNoErr {
-		dpipes.TarHandler = func(err error) { dpipes.Warn(err) }
-	}
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")
 		verbose.Println("# makesource (ZMQ)", inputs[0])
@@ -92,16 +88,17 @@ func makesink(output string, eof bool) func(dpipes.Pipe) {
 func catcmd() {
 	Validate(len(catopts.Positional.Inputs) >= 1, "must provide at least one input (can be '-')")
 	Validate(catopts.Output != "", "must provide output (can be '-')")
-	verbose.Println("#", catopts.Positional.Inputs)
-	verbose.Println("#", catopts.Slice, catopts.ShardSlice)
+	verbose.Println("# inputs", catopts.Positional.Inputs)
+	verbose.Println("# slice", catopts.Slice, catopts.ShardSlice)
 	if catopts.Maxerr > 0 {
+		verbose.Println("# maxerr", catopts.Maxerr)
 		nerrors := 0
 		dpipes.TarHandler = func(err error) {
 			if nerrors >= catopts.Maxerr {
 				panic(err)
 			}
-			errlog.Println("WARNING", err)
 			nerrors++
+			verbose.Println("WARNING", nerrors, err)
 		}
 	}
 	processes := make([]dpipes.Process, 0, 100)

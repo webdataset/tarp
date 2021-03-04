@@ -2,7 +2,7 @@ module github.com/tmbdev/tarp/tarp
 
 replace github.com/tmbdev/tarp/dpipes => ../dpipes
 
-go 1.14
+go 1.15
 
 require (
 	github.com/DataDog/zstd v1.4.8 // indirect
@@ -16,7 +16,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/shamaton/msgpack v1.2.1
-	github.com/tmbdev/tarp/dpipes v0.0.0-20210304085256-7391c81c25b5
+	github.com/tmbdev/tarp/dpipes v0.0.0-20210304171258-8fb44eb0bd11
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sys v0.0.0-20210304152209-afaa3650a925 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect

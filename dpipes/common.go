@@ -55,7 +55,7 @@ func Handle(err error, args ...interface{}) {
 		fmt.Println("Catch:", message)
 		panic(err)
 	} else {
-		fmt.Println("Warning called with nil error")
+		errors.New("Handle called with nil argument.")
 	}
 }
 
@@ -69,7 +69,7 @@ func Warn(err error, args ...interface{}) {
 		message := strings.Join(result, " ")
 		fmt.Println("Catch:", message)
 	} else {
-		fmt.Println("Warning called with nil error")
+		errors.New("Handle called with nil argument.")
 	}
 }
 
@@ -130,7 +130,6 @@ func ExpandBraces(s string) []string {
 	lohi := strings.Split(sub, "..")
 	lo, _ := strconv.Atoi(lohi[0])
 	hi, _ := strconv.Atoi(lohi[1])
-	fmt.Println(lo, hi)
 	prefix := s[:loc[0]]
 	rest := ExpandBraces(s[loc[1]:])
 	result := make([]string, 0, 100)
