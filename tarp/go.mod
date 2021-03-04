@@ -16,9 +16,9 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/shamaton/msgpack v1.2.1
-	github.com/tmbdev/tarp/dpipes v0.0.0-20210304084347-d8be9d8ebaf8
+	github.com/tmbdev/tarp/dpipes v0.0.0-20210304085256-7391c81c25b5
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
-	golang.org/x/sys v0.0.0-20210303074136-134d130e1a04 // indirect
+	golang.org/x/sys v0.0.0-20210304152209-afaa3650a925 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/zeromq/goczmq.v4 v4.1.0 // indirect
 )

@@ -3,11 +3,13 @@ dpipes := $(wildcard dpipes/*.go)
 
 bin/tarp: $(cmds) $(dpipes)
 	go clean
+	cd tarp && go get -u
 	go build -o bin/tarp $(cmds)
 	bin/tarp -h
 
 bin/tarp-full: $(cmds) $(dpipes)
 	go clean
+	cd tarp && go get -u
 	go build -tags mpio -o bin/tarp $(cmds)
 	bin/tarp -h
 

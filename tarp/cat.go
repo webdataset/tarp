@@ -50,7 +50,7 @@ func readlines(fname string) []string {
 
 func makesource(inputs []string, eof bool) func(dpipes.Pipe) {
 	if catopts.TarNoErr {
-		dpipes.TarHandler = dpipes.Warning
+		dpipes.TarHandler = func(err error) { dpipes.Warn(err) }
 	}
 	if zurlre.MatchString(inputs[0]) {
 		Validate(len(inputs) == 1, "can only use a single ZMQ url for input")

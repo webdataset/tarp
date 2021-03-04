@@ -60,7 +60,7 @@ func Handle(err error, args ...interface{}) {
 }
 
 // Handle is a generic warning handler (returns after printing warning)
-func Warning(err error, args ...interface{}) {
+func Warn(err error, args ...interface{}) {
 	if err != nil {
 		result := make([]string, len(args))
 		for i, v := range args {
