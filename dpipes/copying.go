@@ -37,6 +37,7 @@ func SliceSamplesStep(start, end, step int) func(inch Pipe, outch Pipe) {
 		count := 0
 		for sample := range inch {
 			if count < start {
+				count++
 				continue
 			}
 			if end >= 0 && count >= end {
