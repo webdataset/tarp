@@ -33,6 +33,7 @@ func RekeySamples(spec string) func(inch Pipe, outch Pipe) {
 // SliceSamples takes a slice out of a pipe (from start to end).
 func SliceSamplesStep(start, end, step int) func(inch Pipe, outch Pipe) {
 	return func(inch Pipe, outch Pipe) {
+		Debug.Println("SliceSamples start", start, end, step)
 		count := 0
 		for sample := range inch {
 			if count < start {

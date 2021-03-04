@@ -73,6 +73,9 @@ func Aggregate(inch RawPipe, outch Pipe) {
 func Disaggregate(inch Pipe, outch RawPipe) {
 	count := 0
 	for sample := range inch {
+		if len(sample) == 0 {
+			continue
+		}
 		prefix := string(sample["__key__"])
 		// Debug.Println("Disaggregate", prefix)
 		if prefix == "" {
@@ -80,6 +83,9 @@ func Disaggregate(inch Pipe, outch RawPipe) {
 		}
 		Assert(prefix != "", "encountered empty prefix")
 		for key, value := range sample {
+			if key == "" {
+				continue
+			}
 			if key[0] == "_"[0] {
 				continue
 			}

@@ -11,4 +11,5 @@ require (
 	github.com/maruel/panicparse v1.3.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/tmbdev/tarp/dpipes v0.0.0-20200330012711-53823ac810b9
+	gopkg.in/zeromq/goczmq.v4 v4.1.0 // indirect
 )
