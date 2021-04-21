@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dgraph-io/badger/v2"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/shamaton/msgpack"
 	"github.com/tmbdev/tarp/dpipes"
 )
