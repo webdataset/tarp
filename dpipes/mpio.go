@@ -1,6 +1,3 @@
-//go:build mpiondl
-// +build mpiondl
-
 package dpipes
 
 import (
