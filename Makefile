@@ -8,8 +8,8 @@ bin/tarp-full:
 	cd tarp && make tarp-full
 
 clean:
-	cd dpipes && go clean
-	cd tarp && go clean
+	cd dpipes && go clean || true
+	cd tarp && go clean || true
 
 install:
 	cd tarp && make install

@@ -1,3 +1,4 @@
+//go:build mpio
 // +build mpio
 
 package dpipes
@@ -36,7 +37,7 @@ func MPSink(stream io.WriteCloser) func(Pipe) {
 // MPTarSource reads a tar file and outputs a stream of samples.
 func MPTarSource(stream io.ReadCloser) func(Pipe) {
 	return func(outch Pipe) {
-		rawinch := make(RawPipe, dpipes.Pipesize)
+		rawinch := make(RawPipe, Pipesize)
 		go TarRawSource(stream)(rawinch)
 		for raw := range rawinch {
 			sample := Sample{}
@@ -52,7 +53,7 @@ func MPTarSource(stream io.ReadCloser) func(Pipe) {
 // MPTarSink writes a stream of samples to disk as a tar file.
 func MPTarSink(stream io.WriteCloser) func(Pipe) {
 	return func(inch Pipe) {
-		rawoutch := make(RawPipe, dpipes.Pipesize)
+		rawoutch := make(RawPipe, Pipesize)
 		go TarRawSink(stream)(rawoutch)
 		for sample := range inch {
 			data, err := msgpack.Encode(sample)
