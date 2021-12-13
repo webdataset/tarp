@@ -101,7 +101,7 @@ func sortcmd() {
 	Validate(len(sortopts.Positional.Inputs) > 0, "must provide at least one input (can be '-')")
 	fields := []string{}
 	if sortopts.Fields != "" {
-		fields := []string{"__key__"}
+		fields = []string{"__key__"}
 		fields = append(fields, strings.Split(sortopts.Fields, " ")...)
 	}
 	Validate(sortopts.Output != "", "must provide output (can be '-')")
