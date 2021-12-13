@@ -50,7 +50,7 @@ func createcmd() {
 		output, source := fields[0], fields[1]
 		contents, err := dpipes.ReadBinary(source)
 		Handle(err)
-		outch <- dpipes.Raw{output, contents}
+		outch <- dpipes.Raw{Key: output, Value: contents}
 		count++
 	}
 	close(outch)

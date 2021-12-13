@@ -1,5 +1,5 @@
-//go:build mpio
-// +build mpio
+//go:build mpiondl
+// +build mpiondl
 
 package dpipes
 

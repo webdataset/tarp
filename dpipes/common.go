@@ -54,8 +54,6 @@ func Handle(err error, args ...interface{}) {
 		message := strings.Join(result, " ")
 		fmt.Println("Catch:", message)
 		panic(err)
-	} else {
-		errors.New("Handle called with nil argument.")
 	}
 }
 
@@ -68,15 +66,13 @@ func Warn(err error, args ...interface{}) {
 		}
 		message := strings.Join(result, " ")
 		fmt.Println("Catch:", message)
-	} else {
-		errors.New("Handle called with nil argument.")
 	}
 }
 
 // Assert checks the assertion and panics with message if fails.
-func Assert(ok bool, args ...interface{}) {
+func Assert(ok bool, args ...interface{}) error {
 	if ok {
-		return
+		return nil
 	}
 	result := make([]string, len(args))
 	for i, v := range args {
