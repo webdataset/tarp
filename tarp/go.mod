@@ -8,7 +8,7 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.2
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/shamaton/msgpack v1.2.1
-	github.com/tmbdev/tarp/dpipes v0.0.0-20211213230405-90a82e3cb56b
+	github.com/tmbdev/tarp/dpipes v0.0.0-20211213233119-28fb43451481
 )
 
 require (
