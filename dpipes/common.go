@@ -147,6 +147,9 @@ func OpenLogger(where string, ident string) *log.Logger {
 		stream, _ := os.Open("/dev/null")
 		return log.New(stream, prefix, 0)
 	}
+	if where == "stdout" {
+		return log.New(os.Stdout, prefix, 0)
+	}
 	if where == "stderr" {
 		return log.New(os.Stderr, prefix, 0)
 	}
