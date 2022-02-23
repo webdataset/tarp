@@ -22,7 +22,7 @@ var pattern string = "^((?:.*/)?(?:[^/.]+))[.]?([^/]*)$"
 var patternRe *regexp.Regexp
 var combiner string = "."
 
-var TarHandler func(error) = func(err error) { Handle(err) }
+var TarHandler func(error) = func(err error) { Warn(err) }
 
 // FnameSplit is used for for aggregating/disaggregating
 // a sorted list of file into groups of related files sharing

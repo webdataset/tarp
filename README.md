@@ -134,6 +134,7 @@ Future work:
     - refactor GOpen/GCreate
     - create dispatch for GOpen/GCreate
     - add key rewriting / key grouping via regexp
+    - integrate go-tfdata
 - medium priority
     - switch sort backend from sqlite3 to bbolt or badger
     - performance optimizations (remove needless copying)
@@ -145,6 +146,8 @@ Future work:
     - add Lua scripting to `tarp proc` for fast internal processing
     - switch to interface and registry for GOpen (from current ad hoc code)
     - spec: JSON files for inputs
+    - replace mpio with cbor
+    - add multiple ZMQ sources as options
 - low priority
     - use Go libraries for accessing cloud/object storage directly
     - TFRecord/tf.Example interoperability

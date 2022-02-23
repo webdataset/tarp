@@ -1,5 +1,3 @@
-// +build mpio
-
 package dpipes
 
 import (

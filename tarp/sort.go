@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dgraph-io/badger/v2"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/shamaton/msgpack"
 	"github.com/tmbdev/tarp/dpipes"
 )
@@ -37,7 +37,8 @@ func getdbdir() string {
 
 }
 
-func WriteBadger(db badger.DB, sortfields []string) func(dpipes.Pipe) {
+// Write data to a badger database.
+func WriteBadger(db *badger.DB, sortfields []string) func(dpipes.Pipe) {
 	return func(inch dpipes.Pipe) {
 		for sample := range inch {
 			dpipes.Assert(len(sample["__key__"]) > 0, "encode")
@@ -61,7 +62,8 @@ func WriteBadger(db badger.DB, sortfields []string) func(dpipes.Pipe) {
 	}
 }
 
-func ReadBadger(db badger.DB) func(dpipes.Pipe) {
+// Read data from a badger database.
+func ReadBadger(db *badger.DB) func(dpipes.Pipe) {
 	return func(outch dpipes.Pipe) {
 		defer func() {
 			dpipes.Debug.Println("db close outch")
@@ -97,9 +99,11 @@ func ReadBadger(db badger.DB) func(dpipes.Pipe) {
 
 func sortcmd() {
 	Validate(len(sortopts.Positional.Inputs) > 0, "must provide at least one input (can be '-')")
-	Validate(sortopts.Fields != "", "you must provide some fields")
-	fields := []string{"__key__"}
-	fields = append(fields, strings.Split(sortopts.Fields, " ")...)
+	fields := []string{}
+	if sortopts.Fields != "" {
+		fields = []string{"__key__"}
+		fields = append(fields, strings.Split(sortopts.Fields, " ")...)
+	}
 	Validate(sortopts.Output != "", "must provide output (can be '-')")
 	sortfields := strings.Split(sortopts.Sortfields, " ")
 	Validate(len(sortfields) == 1, "only one sort field can be specified")
@@ -121,13 +125,13 @@ func sortcmd() {
 		verbose.Println("writing")
 		processes := make([]dpipes.Process, 0, 100)
 		processes = append(processes, dpipes.SliceSamplesSpec(sortopts.Slice))
-		if sortopts.Fields != "" {
+		if len(fields) > 0 {
 			processes = append(processes, dpipes.RenameSamples(fields, true))
 		}
 		dpipes.Processing(
 			dpipes.TarSources(sortopts.Positional.Inputs, nil),
 			dpipes.Pipeline(processes...),
-			WriteBadger(*db, sortfields),
+			WriteBadger(db, sortfields),
 		)
 	}
 
@@ -140,7 +144,7 @@ func sortcmd() {
 			processes = append(processes, dpipes.CopySamples)
 		}
 		dpipes.Processing(
-			ReadBadger(*db),
+			ReadBadger(db),
 			dpipes.Pipeline(processes...),
 			dpipes.TarSinkFile(sortopts.Output),
 		)
