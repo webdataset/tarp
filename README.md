@@ -3,7 +3,7 @@
 # The `tarp` Utility
 
 Tarfiles are commonly used for storing large amounts of data in an efficient,
-sequential access, compressed file format, in particualr for deep learning
+sequential access, compressed file format, in particular for deep learning
 applications. For processing and data transformation,
 people usually unpack them, operate over the files, and tar up the result again.
 
