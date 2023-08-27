@@ -41,6 +41,12 @@ Alternatively, you can also install from a local clone:
 	make bin/tarp
 	sudo make install
 
+You can also use it from a docker image:
+```bash
+docker build -t tarp .
+docker run tarp
+```
+
 # Examples
 
 Download a dataset from Google Cloud, shuffle it, and split it into shards containing
