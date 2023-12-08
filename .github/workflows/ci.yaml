@@ -25,6 +25,10 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build and test
+    - name: Build
       run: |
           make bin/tarp
+
+    - name: Build
+      run: |
+          make test
