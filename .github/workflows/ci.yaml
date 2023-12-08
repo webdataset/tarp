@@ -20,6 +20,13 @@ jobs:
         packages: libczmq-dev libzmq-dev libsodium-dev
         version: 1.0
 
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          go/pkg/mod
+        key: go-modules-${{ hashFiles('**/go.sum') }}
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
