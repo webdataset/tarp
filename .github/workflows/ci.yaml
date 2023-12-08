@@ -14,6 +14,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Install dependencies
+      uses: actions/setup-apt@v3
+      with:
+        packages: |
+          libczmq-dev
+          libzmq-dev
+          libsodium-dev
+
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
