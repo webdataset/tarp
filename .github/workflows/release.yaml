@@ -32,7 +32,7 @@ jobs:
         version: 1.0
 
     - name: Build with xgo
-      uses: crazy-max/ghaction-xgo@v1
+      uses: crazy-max/ghaction-xgo@v3
       with:
         xgo_version: latest
         go_version: 1.21.5
