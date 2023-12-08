@@ -4,7 +4,7 @@ on:
   release:
     types:
       - created
-      
+
   push:
     branches:
       - main
@@ -41,8 +41,8 @@ jobs:
     - uses: wangyoucao577/go-release-action@v1
       with:
         goversion: 1.21.5
-        project_path: ./tarp
-        build_command: "make tarp"
+        build_command: |
+          make bin/tarp
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
