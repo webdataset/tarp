@@ -6,8 +6,7 @@ tarp: $(cmds) $(dpipes)
 	go mod tidy
 	go get -u
 	go build -ldflags "-X main.version=`date -Iseconds`" -o tarp $(cmds)
-	ls -la
-	tarp -h
+	./tarp -h
 
 install: tarp
 	sudo cp tarp /usr/local/bin
