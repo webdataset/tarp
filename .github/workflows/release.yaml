@@ -42,7 +42,7 @@ jobs:
         v: true
         x: false
         ldflags: -s -w
-        working_dir: $GITHUB_WORKSPACE/tarp
+        working_dir: tarp
 
     # - uses: wangyoucao577/go-release-action@v1
     #   with:
