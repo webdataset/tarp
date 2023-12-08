@@ -39,14 +39,11 @@ jobs:
 
     - uses: wangyoucao577/go-release-action@v1
       with:
-        goversion: 1.21
+        goversion: 1.21.5
         project_path: ./tarp
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
-
-
-
 
     # - name: Set up Go
     #   uses: actions/setup-go@v2
