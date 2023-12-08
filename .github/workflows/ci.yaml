@@ -21,5 +21,4 @@ jobs:
 
     - name: Build and test
       run: |
-          cd tarp
           make bin/tarp
