@@ -5,6 +5,8 @@ on:
     types:
       - created
       - edited
+      - published
+      - unpublished
 
   push:
     branches:
