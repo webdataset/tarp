@@ -4,6 +4,7 @@ on:
   release:
     types:
       - created
+      
   push:
     branches:
       - main
@@ -41,6 +42,7 @@ jobs:
       with:
         goversion: 1.21.5
         project_path: ./tarp
+        build_command: "make tarp"
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
