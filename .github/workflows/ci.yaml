@@ -7,7 +7,32 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          brew update
+          brew install libsodium zeromq
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21.5
+
+      - name: Build
+        run: |
+            make bin/tarp
+      env:
+        GOOS: darwin
+        GOARCH: arm64
+        TARP_BIN_NAME: tarp-darwin-arm64
+
+  build-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,10 +61,6 @@ jobs:
     - name: Build
       run: |
           make bin/tarp
-      env:
-        GOOS: ${{ matrix.goos }}
-        GOARCH: ${{ matrix.goarch }}
-        TARP_BIN_NAME: tarp-${{ matrix.goos }}-${{ matrix.goarch }}
 
     # TODO enable testing. Currently failing:
     # Error: mpio.go:12:2: missing go.sum entry for module providing package github.com/shamaton/msgpack (imported by github.com/tmbdev/tarp/dpipes); to add:
