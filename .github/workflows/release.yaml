@@ -44,10 +44,19 @@ jobs:
         export TARP_BIN_NAME=build/tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
 
+    - uses: actions/upload-artifact@v3
+      with:
+        name: executables
+        path: build/tarp-*
+
   release:
     needs: build-binaries
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: executables
+        path: build/tarp-*
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
