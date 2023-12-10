@@ -31,7 +31,7 @@ jobs:
         v: true
         x: true
         # ldflags: -s -w
-        working_dir: ./tarp
+        pkg: tarp
         # buildvcs: true
 
     - name: Cache Go modules
