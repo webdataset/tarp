@@ -35,5 +35,4 @@ jobs:
 
     - name: Build
       run: |
-          export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
           make bin/tarp
