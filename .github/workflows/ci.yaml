@@ -10,23 +10,22 @@ jobs:
   build-macos:
     runs-on: macos-latest
     steps:
-    
-      - name: Check out repository code
-        uses: actions/checkout@v4
+    - name: Check out repository code
+      uses: actions/checkout@v4
 
-      - name: Install deps
-        run: |
-          brew update
-          brew install libsodium zeromq
+    - name: Install deps
+      run: |
+        brew update
+        brew install libsodium zeromq
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.21.5
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.21.5
 
-      - name: Build
-        run: |
-            make bin/tarp
+    - name: Build
+      run: |
+          make bin/tarp
       env:
         GOOS: darwin
         GOARCH: arm64
