@@ -44,6 +44,11 @@ jobs:
         export TARP_BIN_NAME=build/tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
 
+    - name: List binaries
+      run: |
+        ls -la
+        ls -la build/
+
     - uses: actions/upload-artifact@v3
       with:
         name: executables
