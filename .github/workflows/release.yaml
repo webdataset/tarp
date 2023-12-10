@@ -47,7 +47,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: executables
-        path: build/tarp-*
+        path: ${{ github.workspace }}/build/tarp-*
 
   release:
     needs: build-binaries
@@ -56,7 +56,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: executables
-        path: build/tarp-*
+        path: ${{ github.workspace }}/build/tarp-*
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
