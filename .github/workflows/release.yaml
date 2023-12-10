@@ -40,8 +40,9 @@ jobs:
 
     - name: Build binaries
       run: |
-        mkdir -p build
-        export TARP_BIN_NAME=build/tarp-$(go env GOOS)-$(go env GOARCH)
+        build_dir=${GITHUB_WORKSPACE}/build
+        mkdir -p ${build_dir}
+        export TARP_BIN_NAME=${build_dir}/tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
 
     - name: List binaries
