@@ -24,9 +24,8 @@ jobs:
 
     - name: Build
       run: |
-          make bin/tarp
-      env:
-        TARP_BIN_NAME: tarp-${{ env.GOOS }}-${{ env.GOARCH }}
+        export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
+        make bin/tarp
 
   build-linux:
     runs-on: ubuntu-latest
@@ -56,6 +55,5 @@ jobs:
 
     - name: Build
       run: |
+          export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
           make bin/tarp
-      env:
-        TARP_BIN_NAME: tarp-${{ env.GOOS }}-${{ env.GOARCH }}
