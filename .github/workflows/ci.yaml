@@ -39,7 +39,7 @@ jobs:
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
-        GOFLAGS: -o tarp-${{ matrix.goos }}-${{ matrix.goarch }}
+        TARP_BIN_NAME: tarp-${{ matrix.goos }}-${{ matrix.goarch }}
 
     # TODO enable testing. Currently failing:
     # Error: mpio.go:12:2: missing go.sum entry for module providing package github.com/shamaton/msgpack (imported by github.com/tmbdev/tarp/dpipes); to add:

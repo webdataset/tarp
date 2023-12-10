@@ -52,7 +52,7 @@ jobs:
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
-        GOFLAGS: -o tarp-${{ matrix.goos }}-${{ matrix.goarch }}
+        TARP_BIN_NAME: tarp-${{ matrix.goos }}-${{ matrix.goarch }}
 
     # - name: Build binaries
     #   run: GOOS=linux GOOS=amd64 go build -o tarp_amd64

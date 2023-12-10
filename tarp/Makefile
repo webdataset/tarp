@@ -1,14 +1,15 @@
 cmds := $(wildcard *.go)
 dpipes := $(wildcard ../dpipes/*.go)
-GOFLAGS ?= "-X main.version=`date -Iseconds`" -o tarp
+TARP_BIN_NAME ?= tarp
+
 
 tarp: $(cmds) $(dpipes)
 	go clean
 	go mod tidy
 	go get -u
-	go build $(GOFLAGS) $(cmds)
+	go build -ldflags "-X main.version=`date -Iseconds`" -o $(TARP_BIN_NAME) $(cmds)
 	./tarp -h
 
 
 install: tarp
-	sudo cp $(name) /usr/local/bin
+	sudo cp $(TARP_BIN_NAME) /usr/local/bin
