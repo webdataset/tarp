@@ -68,5 +68,5 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          build/tarp-*
+          ${{ github.workspace }}/build/tarp-*
 
