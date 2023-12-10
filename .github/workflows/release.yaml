@@ -40,7 +40,8 @@ jobs:
 
     - name: Build binaries
       run: |
-        export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
+        mkdir -p build
+        export TARP_BIN_NAME=build/tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
 
   release:
@@ -52,5 +53,5 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          tarp/tarp-linux-amd64
-          tarp/tarp-darwin-amd64
+          build/tarp-*
+
