@@ -1,12 +1,6 @@
 name: Release
 
 on:
-  # workflow_dispatch:
-  # release:
-  #   types:
-  #     - created
-  #     - edited
-  #     - published
   push:
     # Pattern matched against refs/tags
     tags:        
@@ -17,7 +11,7 @@ permissions:
     packages: write
 
 jobs:
-  releases-matrix:
+  build-binaries:
     name: Release go binaries
     runs-on: ${{ matrix.os }}
     strategy:
@@ -49,39 +43,14 @@ jobs:
         export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
 
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
+  release:
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        tag_name: ${{ github.event.release.tag_name }}
-        release_name: Release ${{ github.event.release.tag_name }}
-        draft: false
-        prerelease: false
-
-    - name: Upload binaries
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./tarp_linux_amd64
-        asset_name: tarp_linux_amd64
-        asset_content_type: application/octet-stream
-
-    # - name: Upload additional binaries
-    #   uses: actions/upload-release-asset@v1
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./myapp_darwin_amd64
-    #     asset_name: myapp_darwin_amd64
-    #     asset_content_type: application/octet-stream
-        # Add more upload steps for other platforms
-
-    # Optionally, build and push OCI image
-    # - name: Build and push OCI image
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #     context: .
-    #     file: ./Dockerfile
-    #     platforms: linux/amd64,linux/arm64
-    #     push: true
-    #     tags: ghcr.io/${{ github.repository_owner }}/tarp:latest
+        files: |
+          tarp-linux-amd64
+          tarp-darwin-amd64
