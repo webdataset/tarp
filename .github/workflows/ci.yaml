@@ -20,20 +20,6 @@ jobs:
         packages: libczmq-dev libzmq-dev libsodium-dev
         version: 1.0
 
-    - name: Build with xgo
-      uses: crazy-max/ghaction-xgo@v3
-      with:
-        xgo_version: latest
-        go_version: 1.21
-        # dest: build
-        # prefix: tarp
-        targets: linux/386,linux/amd64,darwin/386,darwin/amd64
-        v: true
-        x: true
-        # ldflags: -s -w
-        pkg: tarp
-        # buildvcs: true
-
     - name: Cache Go modules
       uses: actions/cache@v3
       with:
@@ -50,6 +36,10 @@ jobs:
     - name: Build
       run: |
           make bin/tarp
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+        GOFLAGS: -o tarp-${{ matrix.goos }}-${{ matrix.goarch }}
 
     # TODO enable testing. Currently failing:
     # Error: mpio.go:12:2: missing go.sum entry for module providing package github.com/shamaton/msgpack (imported by github.com/tmbdev/tarp/dpipes); to add:
