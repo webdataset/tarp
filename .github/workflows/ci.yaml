@@ -18,7 +18,7 @@ jobs:
         brew install libsodium zmq czmq zeromq
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v4
       with:
         go-version: 1.21.5
 
@@ -26,7 +26,7 @@ jobs:
       run: |
           make bin/tarp
       env:
-        TARP_BIN_NAME: tarp-${GOOS}-${GOARCH}
+        TARP_BIN_NAME: tarp-${{ env.GOOS }}-${{ env.GOARCH }}
 
   build-linux:
     runs-on: ubuntu-latest
@@ -50,22 +50,12 @@ jobs:
         restore-keys: ${{ runner.os }}-go-
 
     - name: Set up Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v4
       with:
         go-version: 1.21.5
 
     - name: Build
       run: |
           make bin/tarp
-
-    # TODO enable testing. Currently failing:
-    # Error: mpio.go:12:2: missing go.sum entry for module providing package github.com/shamaton/msgpack (imported by github.com/tmbdev/tarp/dpipes); to add:
-    # 	go get github.com/tmbdev/tarp/dpipes
-    # Error: mpio.go:13:2: missing go.sum entry for module providing package gopkg.in/zeromq/goczmq.v4 (imported by github.com/tmbdev/tarp/dpipes); to add:
-    # 	go get github.com/tmbdev/tarp/dpipes
-    # make: *** [Makefile:18: test] Error 1
-    # Error: Process completed with exit code 2.
-
-    # - name: Build
-    #   run: |
-    #       make test
+      env:
+        TARP_BIN_NAME: tarp-${{ env.GOOS }}-${{ env.GOARCH }}
