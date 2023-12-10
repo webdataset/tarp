@@ -7,7 +7,7 @@ tarp: $(cmds) $(dpipes)
 	go mod tidy
 	go get -u
 	go build -ldflags "-X main.version=`date -Iseconds`" -o $(TARP_BIN_NAME) $(cmds)
-	./$(TARP_BIN_NAME) -h
+	$(TARP_BIN_NAME) -h
 
 
 install: tarp
