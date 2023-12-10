@@ -27,9 +27,7 @@ jobs:
       run: |
           make bin/tarp
       env:
-        GOOS: darwin
-        GOARCH: arm64
-        TARP_BIN_NAME: tarp-darwin-arm64
+        TARP_BIN_NAME: tarp-${GOOS}-${GOARCH}
 
   build-linux:
     runs-on: ubuntu-latest
