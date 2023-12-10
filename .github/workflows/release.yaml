@@ -35,14 +35,16 @@ jobs:
       uses: crazy-max/ghaction-xgo@v3
       with:
         xgo_version: latest
-        # go_version: 1.21.5
+        go_version: 1.21
         dest: build
         prefix: tarp
         targets: windows/386,windows/amd64,linux/386,linux/amd64,darwin/386,darwin/amd64
         v: true
         x: false
-        ldflags: -s -w
-        working_dir: tarp
+        # ldflags: -s -w
+        # working_dir: tarp
+        pkg: tarp
+        buildvcs: true
 
     # - uses: wangyoucao577/go-release-action@v1
     #   with:
