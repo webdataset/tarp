@@ -4,14 +4,6 @@ on:
   release:
     types:
       - created
-      - edited
-      - published
-      - unpublished
-
-  push:
-    branches:
-      - main
-  pull_request:
 
 permissions:
     contents: write
@@ -19,63 +11,56 @@ permissions:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows    
+        os: [ubuntu-latest, macos-latest]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Install dependencies
-      uses: awalsh128/cache-apt-pkgs-action@latest
-      with:
-        packages: libczmq-dev libzmq-dev libsodium-dev
-        version: 1.0
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          sudo apt-get update
+          sudo apt-get install -y libczmq-dev libzmq-dev libsodium-dev
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          brew install libsodium zmq czmq zeromq
+        fi
+      shell: bash
 
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.21
 
-    - name: Build
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21.5
+
+    - name: Build binaries
       run: |
-          make bin/tarp
-      env:
-        GOOS: ${{ matrix.goos }}
-        GOARCH: ${{ matrix.goarch }}
-        TARP_BIN_NAME: tarp-${{ matrix.goos }}-${{ matrix.goarch }}
+        export TARP_BIN_NAME=tarp-$(go env GOOS)-$(go env GOARCH)
+        make bin/tarp
 
-    # - name: Build binaries
-    #   run: GOOS=linux GOOS=amd64 go build -o tarp_amd64
-    #        && GOOS=darwin GOARCH=amd64 go build -o tarp_darwin_amd64
-    #        # Add more platforms if needed
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.event.release.tag_name }}
+        release_name: Release ${{ github.event.release.tag_name }}
+        draft: false
+        prerelease: false
 
-    # - name: Create release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   with:
-    #     tag_name: ${{ github.event.release.tag_name }}
-    #     release_name: Release ${{ github.event.release.tag_name }}
-    #     draft: false
-    #     prerelease: false
-
-    # - name: Upload binaries
-    #   id: upload-release-asset
-    #   uses: actions/upload-release-asset@v1
-    #   with:
-    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-    #     asset_path: ./myapp_linux_amd64
-    #     asset_name: myapp_linux_amd64
-    #     asset_content_type: application/octet-stream
+    - name: Upload binaries
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./tarp_linux_amd64
+        asset_name: tarp_linux_amd64
+        asset_content_type: application/octet-stream
 
     # - name: Upload additional binaries
     #   uses: actions/upload-release-asset@v1
