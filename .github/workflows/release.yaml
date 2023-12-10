@@ -44,6 +44,9 @@ jobs:
         mkdir -p ${build_dir}
         export TARP_BIN_NAME=${build_dir}/tarp-$(go env GOOS)-$(go env GOARCH)
         make bin/tarp
+      env:
+        GO_BUILD_FLAGS: -ldflags '-X main.version=`date -Iseconds`' -tags static -installsuffix static -extldflags '-static'
+
 
     - name: List binaries
       run: |
