@@ -15,8 +15,7 @@ jobs:
 
     - name: Install deps
       run: |
-        brew update
-        brew install libsodium zeromq
+        brew install libsodium zmq czmq zeromq
 
     - name: Set up Go
       uses: actions/setup-go@v2
