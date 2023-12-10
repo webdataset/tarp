@@ -52,5 +52,5 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          tarp-linux-amd64
-          tarp-darwin-amd64
+          tarp/tarp-linux-amd64
+          tarp/tarp-darwin-amd64
